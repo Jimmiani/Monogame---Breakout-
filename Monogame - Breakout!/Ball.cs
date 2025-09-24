@@ -27,7 +27,7 @@ namespace Monogame___Breakout_
             _texture = texture;
             _window = window;
             _paddle = paddle;
-            _velocity = new Vector2(3, 3);
+            _velocity = new Vector2(10, 10);
             _hitbox = new Rectangle((window.Width / 2) - 15, (window.Height / 2) - 15, 30, 30);
             _prevLocation = new Vector2(0, 0);
         }
@@ -39,10 +39,26 @@ namespace Monogame___Breakout_
 
             if (_hitbox.Top < 0 || _hitbox.Bottom > _window.Height)
             {
+                if (_hitbox.Top < 0)
+                {
+                    _hitbox.Y = 0;
+                }
+                else
+                {
+                    _hitbox.Y = _window.Height - _hitbox.Height;
+                }
                 _velocity.Y = -_velocity.Y;
             }
             if (_hitbox.Left < 0 || _hitbox.Right > _window.Width)
             {
+                if (_hitbox.Left < 0)
+                {
+                    _hitbox.X = 0;
+                }
+                else
+                {
+                    _hitbox.X = _window.Width - _hitbox.Width;
+                }
                 _velocity.X = -_velocity.X;
             }
 
@@ -64,7 +80,9 @@ namespace Monogame___Breakout_
                     _velocity.Y = -_velocity.Y;
                 }
             }
+            
             _prevLocation.Y = _hitbox.Bottom;
+            _prevLocation.X = _hitbox.Top;
             _hitbox.Offset(_velocity);
         }
 
@@ -75,6 +93,19 @@ namespace Monogame___Breakout_
         public Rectangle Hitbox
         {
             get { return _hitbox; }
+        }
+        public Vector2 Velocity
+        {
+            get { return _velocity; }
+            set { _velocity = value; }
+        }
+        public float PreviousTop
+        {
+            get { return _prevLocation.X; }
+        }
+        public float PreviousBottom
+        {
+            get { return _prevLocation.Y; }
         }
     }
 }

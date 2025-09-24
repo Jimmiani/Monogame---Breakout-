@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Monogame___Breakout_
 {
@@ -12,6 +13,7 @@ namespace Monogame___Breakout_
         KeyboardState keyboardState;
         Paddle paddle;
         Ball ball;
+        List<Brick> bricks;
         Texture2D paddleTexture;
         Texture2D ballTexture;
 
@@ -31,11 +33,24 @@ namespace Monogame___Breakout_
             _graphics.ApplyChanges();
 
             window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            bricks = new List<Brick>();
 
             base.Initialize();
 
             paddle = new Paddle(paddleTexture, window);
             ball = new Ball(ballTexture, window, paddle);
+
+            for (int i = 0; i < 5; i++)
+            {
+                int xLocation = 10;
+                int yLocation = 50 * i + 10;
+                for (int j = 0; j < 10; j++)
+                {
+                    int width = window.Width / 10 - 10;
+                    bricks.Add(new Brick(new Rectangle(xLocation, yLocation, width, 40), paddleTexture));
+                    xLocation += 99;
+                }
+            }
         }
 
         protected override void LoadContent()
@@ -55,6 +70,25 @@ namespace Monogame___Breakout_
 
             paddle.Update(keyboardState);
             ball.Update();
+            for (int i = 0; i < bricks.Count; i++)
+            {
+                bricks[i].Update();
+                if (ball.Hitbox.Intersects(bricks[i].Hitbox))
+                {
+                    if (ball.PreviousTop - bricks[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks[i].Hitbox.Top)
+                    {
+                        ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
+                        bricks.RemoveAt(i);
+                        break;
+                    }
+                    else
+                    {
+                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
+                        bricks.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -67,6 +101,10 @@ namespace Monogame___Breakout_
 
             paddle.Draw(_spriteBatch);
             ball.Draw(_spriteBatch);
+            for (int i = 0; i < bricks.Count; i++)
+            {
+                bricks[i].Draw(_spriteBatch);
+            }
 
             _spriteBatch.End();
 
