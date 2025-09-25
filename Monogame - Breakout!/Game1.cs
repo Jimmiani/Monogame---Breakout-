@@ -69,7 +69,7 @@ namespace Monogame___Breakout_
             keyboardState = Keyboard.GetState();
 
             paddle.Update(keyboardState);
-            ball.Update();
+            ball.Update(keyboardState);
             for (int i = 0; i < bricks.Count; i++)
             {
                 bricks[i].Update();
@@ -88,6 +88,10 @@ namespace Monogame___Breakout_
                         break;
                     }
                 }
+            }
+            if (keyboardState.IsKeyDown(Keys.E))
+            {
+                ball.ChangeSpeed(20);
             }
 
             base.Update(gameTime);
