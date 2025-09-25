@@ -14,7 +14,8 @@ namespace Monogame___Breakout_
         Paddle paddle;
         Ball ball;
         List<Brick> bricks;
-        Texture2D paddleTexture;
+        Texture2D paddleTexture1;
+        Texture2D brickTexture1;
         Texture2D ballTexture;
 
         Rectangle window;
@@ -37,7 +38,7 @@ namespace Monogame___Breakout_
 
             base.Initialize();
 
-            paddle = new Paddle(paddleTexture, window);
+            paddle = new Paddle(paddleTexture1, window);
             ball = new Ball(ballTexture, window, paddle);
 
             for (int i = 0; i < 5; i++)
@@ -47,7 +48,7 @@ namespace Monogame___Breakout_
                 for (int j = 0; j < 10; j++)
                 {
                     int width = window.Width / 10 - 10;
-                    bricks.Add(new Brick(new Rectangle(xLocation, yLocation, width, 40), paddleTexture));
+                    bricks.Add(new Brick(new Rectangle(xLocation, yLocation, width, 40), brickTexture1));
                     xLocation += 99;
                 }
             }
@@ -57,8 +58,9 @@ namespace Monogame___Breakout_
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            paddleTexture = Content.Load<Texture2D>("paddle");
-            ballTexture = Content.Load<Texture2D>("ball");
+            paddleTexture1 = Content.Load<Texture2D>("Breakout/Images/Paddles/crossroads_paddle");
+            brickTexture1 = Content.Load<Texture2D>("Breakout/Images/Bricks/crossroads_plat");
+            ballTexture = Content.Load<Texture2D>("Breakout/Images/Ball/ball");
         }
 
         protected override void Update(GameTime gameTime)
@@ -72,7 +74,6 @@ namespace Monogame___Breakout_
             ball.Update(keyboardState);
             for (int i = 0; i < bricks.Count; i++)
             {
-                bricks[i].Update();
                 if (ball.Hitbox.Intersects(bricks[i].Hitbox))
                 {
                     if (ball.PreviousTop - bricks[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks[i].Hitbox.Top)

@@ -24,7 +24,7 @@ namespace Monogame___Breakout_
         {
             _texture = texture;
             _window = window;
-            _hitbox = new Rectangle((_window.Width / 2) - 75, _window.Height - 100, 150, 20);
+            _hitbox = new Rectangle((_window.Width / 2) - 75, _window.Height - 100, 150, 60);
             _velocity = new Vector2(0, 0);
         }
 
@@ -48,7 +48,7 @@ namespace Monogame___Breakout_
 
         public void Draw(SpriteBatch spritebatch)
         {
-            spritebatch.Draw(_texture, _hitbox, Color.Black);
+            spritebatch.Draw(_texture, _hitbox, Color.White);
         }
 
         public Rectangle Hitbox
