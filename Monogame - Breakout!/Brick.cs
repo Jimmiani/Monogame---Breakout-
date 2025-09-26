@@ -30,7 +30,7 @@ namespace Monogame___Breakout_
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, _hitbox, Color.White);
+            spriteBatch.Draw(_texture, _hitbox, null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipVertically, 0f);
         }
         public Rectangle Hitbox
         {
