@@ -173,6 +173,11 @@ namespace Monogame___Breakout_
         {
             get { return _hitbox; }
         }
+        public Vector2 Position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
         public Vector2 Velocity
         {
             get { return _velocity; }

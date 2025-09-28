@@ -69,7 +69,7 @@ namespace Monogame___Breakout_
             bricks4 = new List<Brick>();
             bricks5 = new List<Brick>();
             bricks6 = new List<Brick>();
-            ballStartSpeed = 10;
+            ballStartSpeed = 8;
 
             screen = Screen.Game;
             gameState = GameState.Crossroads;
@@ -198,6 +198,7 @@ namespace Monogame___Breakout_
                     ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks1.Count; i++)
                     {
+                        bricks1[i].Update();
                         if (ball.Hitbox.Intersects(bricks1[i].Hitbox))
                         {
                             // Collision Checking
@@ -209,12 +210,10 @@ namespace Monogame___Breakout_
                                 if (bricks1[i].Health == 10)
                                 {
                                     brickDamage1.Play();
-                                    bricks1[i].Opacity = 0.7f;
                                 }
                                 else if (bricks1[i].Health == 5)
                                 {
                                     brickDamage2.Play();
-                                    bricks1[i].Opacity = 0.4f;
                                 }
                                 else if (bricks1[i].Health == 0)
                                 {
@@ -235,12 +234,10 @@ namespace Monogame___Breakout_
                                 if (bricks1[i].Health == 10)
                                 {
                                     brickDamage1.Play();
-                                    bricks1[i].Opacity = 0.7f;
                                 }
                                 else if (bricks1[i].Health == 5)
                                 {
                                     brickDamage2.Play();
-                                    bricks1[i].Opacity = 0.4f;
                                 }
                                 else if (bricks1[i].Health == 0)
                                 {
@@ -270,7 +267,7 @@ namespace Monogame___Breakout_
 
                     if (ball.State == BallState.Ready && bricks1.Count <= 0)
                     {
-                        ballStartSpeed = 15;
+                        ballStartSpeed = 10;
                         gameState = GameState.Greenpath;
                         MediaPlayer.Play(greenpathMusic);
                         MediaPlayer.Volume = 1;
@@ -281,25 +278,175 @@ namespace Monogame___Breakout_
 
                 if (gameState == GameState.Greenpath)
                 {
+                    if (MediaPlayer.State == MediaState.Stopped)
+                    {
+                        MediaPlayer.Play(greenpathMusic);
+                    }
                     paddle.Update(keyboardState);
                     ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks2.Count; i++)
                     {
+                        bricks2[i].Update();
                         if (ball.Hitbox.Intersects(bricks2[i].Hitbox))
                         {
+                            // Collision Checking
+
                             if (ball.PreviousTop - bricks2[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks2[i].Hitbox.Top)
                             {
                                 ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
-                                bricks2.RemoveAt(i);
+                                bricks2[i].Health -= 5;
+                                if (bricks2[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                }
+                                else if (bricks2[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                }
+                                else if (bricks2[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks2.RemoveAt(i);
+                                }
+                                if (bricks2.Count <= 0)
+                                {
+                                    ball.Stop();
+                                    ballNormalReturn.Play();
+                                }
                                 break;
                             }
                             else
                             {
                                 ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                                bricks2.RemoveAt(i);
+                                bricks2[i].Health -= 5;
+                                if (bricks2[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                }
+                                else if (bricks2[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                }
+                                else if (bricks2[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks2.RemoveAt(i);
+                                }
+                                if (bricks2.Count <= 0)
+                                {
+                                    ball.Stop();
+                                    ballNormalReturn.Play();
+                                    MediaPlayer.Volume = 0.1f;
+                                }
                                 break;
                             }
                         }
+                    }
+
+                    // Collision Checking for rows behind current row
+
+                    if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks3[0].Hitbox.Bottom)))
+                    {
+                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
+                        brickDeflect.Play();
+                    }
+
+                    // Go to next state
+
+                    if (ball.State == BallState.Ready && bricks2.Count <= 0)
+                    {
+                        ballStartSpeed = 12;
+                        gameState = GameState.City;
+                        MediaPlayer.Play(cityMusic);
+                        MediaPlayer.Volume = 1;
+                    }
+                }
+
+                // City
+
+                if (gameState == GameState.Greenpath)
+                {
+                    if (MediaPlayer.State == MediaState.Stopped)
+                    {
+                        MediaPlayer.Play(greenpathMusic);
+                    }
+                    paddle.Update(keyboardState);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
+                    for (int i = 0; i < bricks2.Count; i++)
+                    {
+                        bricks2[i].Update();
+                        if (ball.Hitbox.Intersects(bricks2[i].Hitbox))
+                        {
+                            // Collision Checking
+
+                            if (ball.PreviousTop - bricks2[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks2[i].Hitbox.Top)
+                            {
+                                ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
+                                bricks2[i].Health -= 5;
+                                if (bricks2[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                }
+                                else if (bricks2[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                }
+                                else if (bricks2[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks2.RemoveAt(i);
+                                }
+                                if (bricks2.Count <= 0)
+                                {
+                                    ball.Stop();
+                                    ballNormalReturn.Play();
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
+                                bricks2[i].Health -= 5;
+                                if (bricks2[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                }
+                                else if (bricks2[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                }
+                                else if (bricks2[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks2.RemoveAt(i);
+                                }
+                                if (bricks2.Count <= 0)
+                                {
+                                    ball.Stop();
+                                    ballNormalReturn.Play();
+                                    MediaPlayer.Volume = 0.1f;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    // Collision Checking for rows behind current row
+
+                    if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks3[0].Hitbox.Bottom)))
+                    {
+                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
+                        brickDeflect.Play();
+                    }
+
+                    // Go to next state
+
+                    if (ball.State == BallState.Ready && bricks2.Count <= 0)
+                    {
+                        ballStartSpeed = 12;
+                        gameState = GameState.City;
+                        MediaPlayer.Play(cityMusic);
+                        MediaPlayer.Volume = 1;
                     }
                 }
             }

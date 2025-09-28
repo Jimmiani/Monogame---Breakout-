@@ -30,7 +30,18 @@ namespace Monogame___Breakout_
 
         public void Update()
         {
-
+            if (_health == 15)
+            {
+                _opacity = 1;
+            }
+            else if (_health == 10)
+            {
+                _opacity = 0.7f;
+            }
+            else if (_health == 5)
+            {
+                _opacity = 0.4f;
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
