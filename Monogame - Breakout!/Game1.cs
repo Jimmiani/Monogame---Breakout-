@@ -28,9 +28,9 @@ namespace Monogame___Breakout_
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        CollisionManager collisionManager;
 
-
-        Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic;
+        Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce;
         SoundEffectInstance abyssAmbienceInstance, ballShineInstance;
 
@@ -76,8 +76,10 @@ namespace Monogame___Breakout_
 
             base.Initialize();
 
+            currentMusic = crossroadsMusic;
             paddle = new Paddle(paddleTexture1, window);
             ball = new Ball(ballTexture, window, paddle);
+            
 
             for (int i = 0; i < 8; i++)
             {
@@ -108,7 +110,7 @@ namespace Monogame___Breakout_
                 int width = 116;
                 int height = 50;
                 int x = (width + 8) * i + 8;
-                int y = 190;
+                int y = 200;
                 bricks2.Add(new Brick(new Rectangle(x, y, width, height), brickTexture2));
             }
             for (int i = 0; i < 8; i++)
@@ -116,9 +118,12 @@ namespace Monogame___Breakout_
                 int width = 116;
                 int height = 50;
                 int x = (width + 8) * i + 8;
-                int y = 255;
+                int y = 265;
                 bricks1.Add(new Brick(new Rectangle(x, y, width, height), brickTexture1));
             }
+            
+            collisionManager = new CollisionManager(ball, bricks1, paddle, ballNormalReturn, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce);
+            collisionManager.SetDeflectHeight(bricks2[0].Hitbox.Bottom);
         }
 
         protected override void LoadContent()
@@ -186,90 +191,40 @@ namespace Monogame___Breakout_
 
             if (screen == Screen.Game)
             {
+                if (MediaPlayer.State == MediaState.Stopped)
+                {
+                    MediaPlayer.Play(currentMusic);
+                }
+
                 // Crossroads
 
                 if (gameState == GameState.Crossroads)
                 {
-                    if (MediaPlayer.State == MediaState.Stopped)
-                    {
-                        MediaPlayer.Play(crossroadsMusic);
-                    }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks1.Count; i++)
                     {
                         bricks1[i].Update();
-                        if (ball.Hitbox.Intersects(bricks1[i].Hitbox))
-                        {
-                            // Collision Checking
-
-                            if (ball.PreviousTop - bricks1[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks1[i].Hitbox.Top)
-                            {
-                                ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
-                                bricks1[i].Health -= 5;
-                                if (bricks1[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks1[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks1[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks1.RemoveAt(i);
-                                }
-                                if (bricks1.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                                bricks1[i].Health -= 5;
-                                if (bricks1[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks1[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks1[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks1.RemoveAt(i);
-                                }
-                                if (bricks1.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                    MediaPlayer.Volume = 0.1f;
-                                }
-                                break;
-                            }
-                        }
                     }
+                    paddle.Update(keyboardState);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed);
 
-                    // Collision Checking for rows behind current row
-
-                    if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks2[0].Hitbox.Bottom)))
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                        brickDeflect.Play();
-                    }
+                    collisionManager.Update();
 
                     // Go to next state
 
+                    if (bricks1.Count <= 0 && ball.State == BallState.Moving)
+                    {
+                        ball.Stop(ballNormalReturn);
+                        MediaPlayer.Volume = 0.1f;
+                    }
+                    
                     if (ball.State == BallState.Ready && bricks1.Count <= 0)
                     {
                         ballStartSpeed = 10;
+                        collisionManager.SetDeflectHeight(bricks3[0].Hitbox.Bottom);
+                        collisionManager.SetActiveBricks(bricks2);
                         gameState = GameState.Greenpath;
-                        MediaPlayer.Play(greenpathMusic);
+                        currentMusic = greenpathMusic;
+                        MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                     }
                 }
@@ -278,177 +233,38 @@ namespace Monogame___Breakout_
 
                 if (gameState == GameState.Greenpath)
                 {
-                    if (MediaPlayer.State == MediaState.Stopped)
-                    {
-                        MediaPlayer.Play(greenpathMusic);
-                    }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks2.Count; i++)
                     {
                         bricks2[i].Update();
-                        if (ball.Hitbox.Intersects(bricks2[i].Hitbox))
-                        {
-                            // Collision Checking
-
-                            if (ball.PreviousTop - bricks2[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks2[i].Hitbox.Top)
-                            {
-                                ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
-                                bricks2[i].Health -= 5;
-                                if (bricks2[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks2[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks2[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks2.RemoveAt(i);
-                                }
-                                if (bricks2.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                                bricks2[i].Health -= 5;
-                                if (bricks2[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks2[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks2[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks2.RemoveAt(i);
-                                }
-                                if (bricks2.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                    MediaPlayer.Volume = 0.1f;
-                                }
-                                break;
-                            }
-                        }
                     }
+                    paddle.Update(keyboardState);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed);
 
-                    // Collision Checking for rows behind current row
-
-                    if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks3[0].Hitbox.Bottom)))
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                        brickDeflect.Play();
-                    }
+                    collisionManager.Update();
 
                     // Go to next state
+
+                    if (bricks2.Count <= 0 && ball.State == BallState.Moving)
+                    {
+                        ball.Stop(ballNormalReturn);
+                        MediaPlayer.Volume = 0.1f;
+                    }
 
                     if (ball.State == BallState.Ready && bricks2.Count <= 0)
                     {
                         ballStartSpeed = 12;
+                        collisionManager.SetDeflectHeight(bricks4[0].Hitbox.Bottom);
+                        collisionManager.SetActiveBricks(bricks3);
                         gameState = GameState.City;
-                        MediaPlayer.Play(cityMusic);
+                        currentMusic = cityMusic;
+                        MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                     }
                 }
 
                 // City
 
-                if (gameState == GameState.Greenpath)
-                {
-                    if (MediaPlayer.State == MediaState.Stopped)
-                    {
-                        MediaPlayer.Play(greenpathMusic);
-                    }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
-                    for (int i = 0; i < bricks2.Count; i++)
-                    {
-                        bricks2[i].Update();
-                        if (ball.Hitbox.Intersects(bricks2[i].Hitbox))
-                        {
-                            // Collision Checking
-
-                            if (ball.PreviousTop - bricks2[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks2[i].Hitbox.Top)
-                            {
-                                ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
-                                bricks2[i].Health -= 5;
-                                if (bricks2[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks2[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks2[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks2.RemoveAt(i);
-                                }
-                                if (bricks2.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                                bricks2[i].Health -= 5;
-                                if (bricks2[i].Health == 10)
-                                {
-                                    brickDamage1.Play();
-                                }
-                                else if (bricks2[i].Health == 5)
-                                {
-                                    brickDamage2.Play();
-                                }
-                                else if (bricks2[i].Health == 0)
-                                {
-                                    brickDeath.Play();
-                                    bricks2.RemoveAt(i);
-                                }
-                                if (bricks2.Count <= 0)
-                                {
-                                    ball.Stop();
-                                    ballNormalReturn.Play();
-                                    MediaPlayer.Volume = 0.1f;
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    // Collision Checking for rows behind current row
-
-                    if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks3[0].Hitbox.Bottom)))
-                    {
-                        ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                        brickDeflect.Play();
-                    }
-
-                    // Go to next state
-
-                    if (ball.State == BallState.Ready && bricks2.Count <= 0)
-                    {
-                        ballStartSpeed = 12;
-                        gameState = GameState.City;
-                        MediaPlayer.Play(cityMusic);
-                        MediaPlayer.Volume = 1;
-                    }
-                }
+                
             }
 
             base.Update(gameTime);

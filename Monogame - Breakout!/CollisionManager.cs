@@ -14,12 +14,12 @@ namespace Monogame___Breakout_
         private Ball _ball;
         private List<Brick> _bricks;
         private Paddle _paddle;
+        private int _deflectHeight;
 
         // Audio
-        private Song _music;
-        private SoundEffect _abyssAmbience, _abyssRoar, _abyssScreenCover, _ballNormalReturn, _ballDarkReturn, _ballShine, _brickDamage1, _brickDamage2, _brickDeath, _brickDeflect, _paddleBounce;
+        private SoundEffect _ballNormalReturn, _brickDamage1, _brickDamage2, _brickDeath, _brickDeflect, _paddleBounce;
 
-        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, SoundEffect ballNormalReturn, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce, Song music)
+        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, SoundEffect ballNormalReturn, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce)
         {
             _ball = ball;
             _bricks = bricks;
@@ -30,15 +30,11 @@ namespace Monogame___Breakout_
             _brickDeath = brickDeath;
             _brickDeflect = brickDeflect;
             _paddleBounce = paddleBounce;
-            _music = music;
+            _deflectHeight = _bricks[0].Hitbox.Bottom - 65;
         }
 
         public void Update()
         {
-            if (MediaPlayer.State == MediaState.Stopped)
-            {
-                MediaPlayer.Play(_music);
-            }
             CheckBrickCollisions();
             CheckPaddleCollisions();
         }
@@ -97,11 +93,6 @@ namespace Monogame___Breakout_
                             _brickDeath.Play();
                             _bricks.RemoveAt(i);
                         }
-                        if (_bricks.Count <= 0)
-                        {
-                            _ball.Stop();
-                            _ballNormalReturn.Play();
-                        }
                         break;
                     }
                     else
@@ -111,32 +102,36 @@ namespace Monogame___Breakout_
                         if (_bricks[i].Health == 10)
                         {
                             _brickDamage1.Play();
-                            _bricks[i].Opacity = 0.7f;
                         }
                         else if (_bricks[i].Health == 5)
                         {
                             _brickDamage2.Play();
-                            _bricks[i].Opacity = 0.4f;
                         }
                         else if (_bricks[i].Health == 0)
                         {
                             _brickDeath.Play();
                             _bricks.RemoveAt(i);
                         }
-                        if (_bricks.Count <= 0)
-                        {
-                            _ball.Stop();
-                            _ballNormalReturn.Play();
-                            MediaPlayer.Volume = 0.1f;
-                        }
                         break;
                     }
                 }
             }
+
+            // Bricks beyond breakable bricks
+
+            if (_ball.Hitbox.Intersects(new Rectangle(0, 0, 1000, _deflectHeight)))
+            {
+                _ball.Velocity = new Vector2(_ball.Velocity.X, -_ball.Velocity.Y);
+                _brickDeflect.Play();
+            }
         }
-        public void SetMusic(Song music)
+        public void SetDeflectHeight(int height)
         {
-            MediaPlayer.Play(music);
+            _deflectHeight = height;
+        }
+        public void SetActiveBricks(List<Brick> bricks)
+        {
+            _bricks = bricks;
         }
     }
 }

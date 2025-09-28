@@ -50,7 +50,7 @@ namespace Monogame___Breakout_
             _returnTimer = 0;
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed, SoundEffect paddleCollide)
+        public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
         {
             if (_ballState == BallState.Ready)
             {
@@ -73,11 +73,11 @@ namespace Monogame___Breakout_
                 {
                     if (_hitbox.Top < 0)
                     {
-                        _hitbox.Y = 0;
+                        _position.Y = 0;
                     }
                     else
                     {
-                        _hitbox.Y = _window.Height - _hitbox.Height;
+                        _position.Y = _window.Height - _hitbox.Height;
                     }
                     _velocity.Y = -_velocity.Y;
                 }
@@ -85,43 +85,15 @@ namespace Monogame___Breakout_
                 {
                     if (_hitbox.Left < 0)
                     {
-                        _hitbox.X = 0;
+                        _position.X = 0;
                     }
                     else
                     {
-                        _hitbox.X = _window.Width - _hitbox.Width;
+                        _position.X = _window.Width - _hitbox.Width;
                     }
                     _velocity.X = -_velocity.X;
                 }
-
-                // Paddle bounces
-
-                if (_hitbox.Intersects(_paddle.Hitbox))
-                {
-                    if (_hitbox.Right > _paddle.Hitbox.Right && _hitbox.Left < _paddle.Hitbox.Right && _prevLocation.Y - _paddle.Hitbox.Top > 0)
-                    {
-                        _hitbox.X = _paddle.Hitbox.Right;
-                    }
-                    else if (_hitbox.Left < _paddle.Hitbox.Left && _hitbox.Right > _paddle.Hitbox.Left && _prevLocation.Y - _paddle.Hitbox.Top > 0)
-                    {
-                        _hitbox.X = _paddle.Hitbox.Left - _hitbox.Width;
-                    }
-                    else
-                    {
-                        _hitbox.Y = _paddle.Hitbox.Top - _hitbox.Height;
-
-                        float paddleCenter = _paddle.Hitbox.Center.X;
-                        float ballCenter = _hitbox.Center.X;
-                        float centerDistance = (ballCenter - paddleCenter) / (_paddle.Hitbox.Width / 2);
-                        float speed = _velocity.Length();
-                        float maxBounceAngle = MathHelper.ToRadians(45);
-                        float bounceAngle = centerDistance * maxBounceAngle;
-                        float angle = MathHelper.PiOver2 + bounceAngle;
-                        _velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle)) * speed;
-                        paddleCollide.Play(0.5f, 0, 0);
-                    }
-                }
-
+                
                 _prevLocation.Y = _hitbox.Bottom;
                 _prevLocation.X = _hitbox.Top;
 
@@ -135,7 +107,7 @@ namespace Monogame___Breakout_
                 _returnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (_returnTimer <= 3.93f)
                 {
-                    _position = Vector2.Lerp(_position, _returnTarget, 0.02f);  
+                    _position = Vector2.Lerp(_position, _returnTarget, 0.03f);  
                     _hitbox.X = (int)_position.X;
                     _hitbox.Y = (int)_position.Y;
                 }
@@ -204,10 +176,12 @@ namespace Monogame___Breakout_
             get { return _ballState; }
             set { _ballState = value; }
         }
-        public void Stop()
+        public void Stop(SoundEffect returnEffect)
         {
+
             _ballState = BallState.Stopped;
             _returnTarget = _position + new Vector2(0, 250);
+            returnEffect.Play();
         }
     }
 }
