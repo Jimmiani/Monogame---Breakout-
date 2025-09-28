@@ -50,7 +50,7 @@ namespace Monogame___Breakout_
             _returnTimer = 0;
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
+        public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed, SoundEffect paddleCollide)
         {
             if (_ballState == BallState.Ready)
             {
@@ -118,6 +118,7 @@ namespace Monogame___Breakout_
                         float bounceAngle = centerDistance * maxBounceAngle;
                         float angle = MathHelper.PiOver2 + bounceAngle;
                         _velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle)) * speed;
+                        paddleCollide.Play(0.5f, 0, 0);
                     }
                 }
 
@@ -132,7 +133,7 @@ namespace Monogame___Breakout_
             else if (_ballState == BallState.Stopped)
             {
                 _returnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (_returnTimer <= 3)
+                if (_returnTimer <= 3.93f)
                 {
                     _position = Vector2.Lerp(_position, _returnTarget, 0.02f);  
                     _hitbox.X = (int)_position.X;
@@ -201,7 +202,7 @@ namespace Monogame___Breakout_
         public void Stop()
         {
             _ballState = BallState.Stopped;
-            _returnTarget = _position + new Vector2(0, 200);
+            _returnTarget = _position + new Vector2(0, 250);
         }
     }
 }

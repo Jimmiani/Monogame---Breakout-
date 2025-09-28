@@ -13,6 +13,108 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Breakout/Audio/Music/Abyss/abyss_ambience.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Abyss/abyss_ambience.wav;Breakout/Audio/Music/Abyss/abyss_ambience
+
+#begin Breakout/Audio/Music/Abyss/abyss_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Abyss/abyss_music.ogg;Breakout/Audio/Music/Abyss/abyss_music
+
+#begin Breakout/Audio/Music/City/city_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/City/city_music.ogg;Breakout/Audio/Music/City/city_music
+
+#begin Breakout/Audio/Music/Crossroads/crossraods_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Crossroads/crossraods_music.ogg;Breakout/Audio/Music/Crossroads/crossraods_music
+
+#begin Breakout/Audio/Music/Greenpath/greenpath_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Greenpath/greenpath_music.ogg;Breakout/Audio/Music/Greenpath/greenpath_music
+
+#begin Breakout/Audio/Music/Palace/palace_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Palace/palace_music.ogg;Breakout/Audio/Music/Palace/palace_music
+
+#begin Breakout/Audio/Music/Sanctum/sanctum_music.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Sanctum/sanctum_music.ogg;Breakout/Audio/Music/Sanctum/sanctum_music
+
+#begin Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar.wav;Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar
+
+#begin Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover.wav;Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover
+
+#begin Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss.wav;Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss
+
+#begin Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return.wav;Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/ball_shine.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/ball_shine.wav;Breakout/Audio/Sound Effects/Ball/Shine/ball_shine
+
+#begin Breakout/Audio/Sound Effects/Bricks/Break/brick_death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Bricks/Break/brick_death.wav;Breakout/Audio/Sound Effects/Bricks/Break/brick_death
+
+#begin Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_1.wav;Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_1
+
+#begin Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_2.wav;Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_2
+
+#begin Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect.wav;Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect
+
+#begin Breakout/Audio/Sound Effects/Paddle/paddle_bounce.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Paddle/paddle_bounce.wav;Breakout/Audio/Sound Effects/Paddle/paddle_bounce
+
 #begin Breakout/Images/Ball/ball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -276,10 +378,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Particles/Smoke/abyss_smoke_05.png;Breakout/Images/Particles/Smoke/abyss_smoke_05
-
-#begin Breakout/Sound Effects/S30 White Palace.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Breakout/Sound Effects/S30 White Palace.wav
 

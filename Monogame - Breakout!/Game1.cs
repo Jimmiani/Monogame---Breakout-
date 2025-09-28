@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -25,6 +27,14 @@ namespace Monogame___Breakout_
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+
+
+        Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic;
+        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce;
+        SoundEffectInstance abyssAmbienceInstance, ballShineInstance;
+
+
 
         KeyboardState keyboardState;
         Screen screen;
@@ -115,6 +125,35 @@ namespace Monogame___Breakout_
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Audio-----------------------------------------------------------------------
+
+            // Music
+
+            crossroadsMusic = Content.Load<Song>("Breakout/Audio/Music/Crossroads/crossraods_music");
+            greenpathMusic = Content.Load<Song>("Breakout/Audio/Music/Greenpath/greenpath_music");
+            cityMusic = Content.Load<Song>("Breakout/Audio/Music/City/city_music");
+            sanctumMusic = Content.Load<Song>("Breakout/Audio/Music/Sanctum/sanctum_music");
+            palaceMusic = Content.Load<Song>("Breakout/Audio/Music/Palace/palace_music");
+            abyssMusic = Content.Load<Song>("Breakout/Audio/Music/Abyss/abyss_music");
+
+            // Sound Effects
+
+            abyssAmbience = Content.Load<SoundEffect>("Breakout/Audio/Music/Abyss/abyss_ambience");
+            abyssAmbienceInstance = abyssAmbience.CreateInstance();
+            abyssRoar = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar");
+            abyssScreenCover = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover");
+            ballNormalReturn = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return");
+            ballDarkReturn = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss");
+            ballShine = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/ball_shine");
+            ballShineInstance = ballShine.CreateInstance();
+            brickDamage1 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_1");
+            brickDamage2 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_2");
+            brickDeath = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Break/brick_death");
+            brickDeflect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect");
+            paddleBounce = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Paddle/paddle_bounce");
+
+            // Images----------------------------------------------------------------------
+
             // Paddles
 
             paddleTexture1 = Content.Load<Texture2D>("Breakout/Images/Paddles/crossroads_paddle");
@@ -144,7 +183,6 @@ namespace Monogame___Breakout_
                 Exit();
 
             keyboardState = Keyboard.GetState();
-            Debug.WriteLine(ballStartSpeed);
 
             if (screen == Screen.Game)
             {
@@ -152,8 +190,12 @@ namespace Monogame___Breakout_
 
                 if (gameState == GameState.Crossroads)
                 {
+                    if (MediaPlayer.State == MediaState.Stopped)
+                    {
+                        MediaPlayer.Play(crossroadsMusic);
+                    }
                     paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks1.Count; i++)
                     {
                         if (ball.Hitbox.Intersects(bricks1[i].Hitbox))
@@ -163,20 +205,53 @@ namespace Monogame___Breakout_
                             if (ball.PreviousTop - bricks1[i].Hitbox.Bottom < 0 && ball.PreviousBottom > bricks1[i].Hitbox.Top)
                             {
                                 ball.Velocity = new Vector2(-ball.Velocity.X, ball.Velocity.Y);
-                                bricks1.RemoveAt(i);
+                                bricks1[i].Health -= 5;
+                                if (bricks1[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                    bricks1[i].Opacity = 0.7f;
+                                }
+                                else if (bricks1[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                    bricks1[i].Opacity = 0.4f;
+                                }
+                                else if (bricks1[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks1.RemoveAt(i);
+                                }
                                 if (bricks1.Count <= 0)
                                 {
                                     ball.Stop();
+                                    ballNormalReturn.Play();
                                 }
                                 break;
                             }
                             else
                             {
                                 ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
-                                bricks1.RemoveAt(i);
+                                bricks1[i].Health -= 5;
+                                if (bricks1[i].Health == 10)
+                                {
+                                    brickDamage1.Play();
+                                    bricks1[i].Opacity = 0.7f;
+                                }
+                                else if (bricks1[i].Health == 5)
+                                {
+                                    brickDamage2.Play();
+                                    bricks1[i].Opacity = 0.4f;
+                                }
+                                else if (bricks1[i].Health == 0)
+                                {
+                                    brickDeath.Play();
+                                    bricks1.RemoveAt(i);
+                                }
                                 if (bricks1.Count <= 0)
                                 {
                                     ball.Stop();
+                                    ballNormalReturn.Play();
+                                    MediaPlayer.Volume = 0.1f;
                                 }
                                 break;
                             }
@@ -188,6 +263,7 @@ namespace Monogame___Breakout_
                     if (ball.Hitbox.Intersects(new Rectangle(0, 0, window.Width, bricks2[0].Hitbox.Bottom)))
                     {
                         ball.Velocity = new Vector2(ball.Velocity.X, -ball.Velocity.Y);
+                        brickDeflect.Play();
                     }
 
                     // Go to next state
@@ -196,6 +272,8 @@ namespace Monogame___Breakout_
                     {
                         ballStartSpeed = 15;
                         gameState = GameState.Greenpath;
+                        MediaPlayer.Play(greenpathMusic);
+                        MediaPlayer.Volume = 1;
                     }
                 }
 
@@ -204,7 +282,7 @@ namespace Monogame___Breakout_
                 if (gameState == GameState.Greenpath)
                 {
                     paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed, paddleBounce);
                     for (int i = 0; i < bricks2.Count; i++)
                     {
                         if (ball.Hitbox.Intersects(bricks2[i].Hitbox))
