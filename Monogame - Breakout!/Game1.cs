@@ -436,13 +436,13 @@ namespace Monogame___Breakout_
                     abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (abyssTimer >= 4 && !tendril1Up)
                     {
-                        tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 150);
+                        tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 158);
                         tendril1.Up();
                         tendril1Up = true;
                     }
                     if (abyssTimer >= 5 && !tendril2Up)
                     {
-                        tendril2.SetLocation(paddle.Hitbox.Right - 110, paddle.Hitbox.Y - 150);
+                        tendril2.SetLocation(paddle.Hitbox.Right - 110, paddle.Hitbox.Y - 155);
                         tendril2.Up();
                         tendril2Up = true;
                     }
@@ -478,19 +478,19 @@ namespace Monogame___Breakout_
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        bricks5.Clear();
+                        bricks6.Clear();
                     }
 
                     // Go to next state
 
-                    if (bricks5.Count <= 0 && ball.State == BallState.Moving)
+                    if (bricks6.Count <= 0 && ball.State == BallState.Moving)
                     {
                         ball.Stop();
                         ballDarkReturn.Play();
                         MediaPlayer.Volume = 0.1f;
                     }
 
-                    if (ball.State == BallState.Ready && bricks5.Count <= 0)
+                    if (ball.State == BallState.Ready && bricks6.Count <= 0)
                     {
                         ballStartSpeed = 16;
                         collisionManager.SetActiveBricks(bricks6);
