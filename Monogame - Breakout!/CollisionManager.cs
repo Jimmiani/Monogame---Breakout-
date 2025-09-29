@@ -17,14 +17,13 @@ namespace Monogame___Breakout_
         private int _deflectHeight;
 
         // Audio
-        private SoundEffect _ballNormalReturn, _brickDamage1, _brickDamage2, _brickDeath, _brickDeflect, _paddleBounce;
+        private SoundEffect _brickDamage1, _brickDamage2, _brickDeath, _brickDeflect, _paddleBounce;
 
-        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, SoundEffect ballNormalReturn, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce)
+        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce)
         {
             _ball = ball;
             _bricks = bricks;
             _paddle = paddle;
-            _ballNormalReturn = ballNormalReturn;
             _brickDamage1 = brickDamage1;
             _brickDamage2 = brickDamage2;
             _brickDeath = brickDeath;

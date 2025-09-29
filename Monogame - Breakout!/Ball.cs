@@ -33,7 +33,7 @@ namespace Monogame___Breakout_
         private float _returnTimer;
         private Vector2 _position;
         private Vector2 _returnTarget;
-
+        private bool _canStart;
 
         public Ball(Texture2D texture, Rectangle window, Paddle paddle)
         {
@@ -42,22 +42,25 @@ namespace Monogame___Breakout_
             _paddle = paddle;
             _velocity = new Vector2(0, 0);
             _hitbox = new Rectangle((window.Width / 2) - 15, (window.Height / 2) - 15, 30, 30);
-            _position = new Vector2(_hitbox.X, _hitbox.Y);
+            _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
             _returnTarget = _position;
             _prevLocation = new Vector2(0, 0);
             _ballState = BallState.Ready;
             _generator = new Random();
             _returnTimer = 0;
+            _canStart = true;
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
         {
             if (_ballState == BallState.Ready)
             {
+                _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
                 _velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
-                    _ballState = BallState.Start;
+                    if (_canStart)
+                        _ballState = BallState.Start;
                 }
             }
             else if (_ballState == BallState.Start)
@@ -131,10 +134,9 @@ namespace Monogame___Breakout_
                 if (_hitbox.Intersects(new Rectangle(_window.Width / 2, _window.Height / 2, 1, 1)))
                 {
                     _ballState = BallState.Ready;
+                    _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
                 }
             }
-            
-           
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -176,12 +178,15 @@ namespace Monogame___Breakout_
             get { return _ballState; }
             set { _ballState = value; }
         }
-        public void Stop(SoundEffect returnEffect)
+        public void Stop()
         {
-
             _ballState = BallState.Stopped;
             _returnTarget = _position + new Vector2(0, 250);
-            returnEffect.Play();
+        }
+        public bool CanStart
+        {
+            get { return _canStart; }
+            set { _canStart = value; }
         }
     }
 }

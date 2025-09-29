@@ -55,17 +55,23 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Music/Sanctum/sanctum_music.ogg;Breakout/Audio/Music/Sanctum/sanctum_music
 
-#begin Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar.wav
+#begin Breakout/Audio/Sound Effects/Abyss/abyss_roar.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar.wav;Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_roar
+/build:Breakout/Audio/Sound Effects/Abyss/abyss_roar.wav;Breakout/Audio/Sound Effects/Abyss/abyss_roar
 
-#begin Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover.wav
+#begin Breakout/Audio/Sound Effects/Abyss/abyss_screen_cover.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover.wav;Breakout/Audio/Sound Effects/Ball/Return/Dark/abyss_screen_cover
+/build:Breakout/Audio/Sound Effects/Abyss/abyss_screen_cover.wav;Breakout/Audio/Sound Effects/Abyss/abyss_screen_cover
+
+#begin Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up.wav;Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up
 
 #begin Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss.wav
 /importer:WavImporter
@@ -378,4 +384,340 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Particles/Smoke/abyss_smoke_05.png;Breakout/Images/Particles/Smoke/abyss_smoke_05
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_000.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_000.png;Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_000
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_001.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_001.png;Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_001
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_002.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_002.png;Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_002
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_003.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_003.png;Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_003
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_004.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_004.png;Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_004
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_000.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_000.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_000
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_001.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_001.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_001
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_002.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_002.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_002
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_003.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_003.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_003
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_004.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_004.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_004
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_005.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_005.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_005
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_006.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_006.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_006
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_007.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_007.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_007
+
+#begin Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_008.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_008.png;Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_008
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_000.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_000.png;Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_000
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_001.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_001.png;Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_001
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_002.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_002.png;Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_002
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_003.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_003.png;Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_003
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_004.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_004.png;Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_004
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_000.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_000.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_000
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_001.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_001.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_001
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_002.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_002.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_002
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_003.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_003.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_003
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_004.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_004.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_004
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_005.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_005.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_005
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_006.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_006.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_006
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_007.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_007.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_007
+
+#begin Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_008.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_008.png;Breakout/Images/Tendrils/Right Tendril/Tendril Up 20/Tendril1 Up_008
 
