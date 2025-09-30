@@ -31,8 +31,8 @@ namespace Monogame___Breakout_
 
         CollisionManager collisionManager;
 
-        ParticleSystem smokeSystem, essenceSystem;
-        List<Texture2D> smokeParticles, essenceParticles;
+        ParticleSystem smokeSystem, essenceSystem, ballSystem, dotSystem;
+        List<Texture2D> smokeParticles, essenceParticles, dotParticles;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce;
@@ -50,6 +50,9 @@ namespace Monogame___Breakout_
         Texture2D paddleTexture1, paddleTexture2, paddleTexture3, paddleTexture4, paddleTexture5, paddleTexture6;
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
         Texture2D ballTexture;
+
+        Texture2D crossroadsBackground;
+        Texture2D screenFader, vignette;
 
 
         float abyssTimer;
@@ -75,9 +78,7 @@ namespace Monogame___Breakout_
 
             smokeParticles = new List<Texture2D>();
             essenceParticles = new List<Texture2D>();
-
-            smokeSystem = new ParticleSystem(smokeParticles, new Rectangle(0, 900, 1000, 150), EmitterShape.Rectangle);
-            essenceSystem = new ParticleSystem(essenceParticles, new Rectangle(0, 0, 1000, 800), EmitterShape.Rectangle);
+            dotParticles = new List<Texture2D>();
 
             window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             bricks1 = new List<Brick>();
@@ -158,6 +159,11 @@ namespace Monogame___Breakout_
             collisionManager = new CollisionManager(ball, bricks1, paddle, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce);
             collisionManager.SetDeflectHeight(bricks2[0].Hitbox.Bottom);
 
+            smokeSystem = new ParticleSystem(smokeParticles, new Rectangle(-150, 900, 1300, 150), EmitterShape.Rectangle);
+            essenceSystem = new ParticleSystem(essenceParticles, new Rectangle(0, 0, 1000, 800), EmitterShape.Rectangle);
+            ballSystem = new ParticleSystem(dotParticles, ball.Hitbox, EmitterShape.Rectangle);
+            dotSystem = new ParticleSystem(dotParticles, new Rectangle(0, 650, 1000, 150), EmitterShape.Rectangle);
+
             tendril1 = new VoidTendril(tendril1UpTextures, tendril1DownTextures, tendrilEffect);
             tendril2 = new VoidTendril(tendril2UpTextures, tendril2DownTextures, tendrilEffect);
 
@@ -176,6 +182,15 @@ namespace Monogame___Breakout_
             essenceSystem.SetAngularVelocity(0.15f, 0.2f);
             essenceSystem.Color = Color.DarkSlateBlue;
 
+            ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
+            ballSystem.SetSize(0.7f, 1);
+            ballSystem.SetSpawnInfo(0.05f, 1);
+            ballSystem.SetLifespan(0.5f, 1);
+
+            dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
+            dotSystem.SetSize(0.5f, 1);
+            dotSystem.SetSpawnInfo(0.6f, 1);
+            dotSystem.SetLifespan(3, 4);
         }
 
         protected override void LoadContent()
@@ -218,6 +233,9 @@ namespace Monogame___Breakout_
                 smokeParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Smoke/abyss_smoke_0" + i));
             for (int i = 1; i <= 3; i++)
                 essenceParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Essence/dream_particle_" + i));
+            dotParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Ball/particle_01"));
+            screenFader = Content.Load<Texture2D>("Breakout/Images/Particles/Fader/black_fader");
+            vignette = Content.Load<Texture2D>("Breakout/Images/Particles/Vignette/vignette");
 
             // Paddles
 
@@ -251,6 +269,10 @@ namespace Monogame___Breakout_
                 tendril1DownTextures.Add(Content.Load<Texture2D>("Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_00" + i));
             for (int i = 0; i <= 4; i++)
                 tendril2DownTextures.Add(Content.Load<Texture2D>("Breakout/Images/Tendrils/Right Tendril/Tendril Down 20/Tendril1 Down_00" + i));
+
+            // Backgrounds
+
+            crossroadsBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/crossroads_background");
         }
 
         protected override void Update(GameTime gameTime)
@@ -268,6 +290,9 @@ namespace Monogame___Breakout_
                 }
                 essenceSystem.Update(gameTime);
                 smokeSystem.Update(gameTime);
+                ballSystem.Update(gameTime);
+                dotSystem.Update(gameTime);
+                ballSystem.EmitterBoundary = ball.Hitbox;
 
                 // Crossroads
 
@@ -386,7 +411,7 @@ namespace Monogame___Breakout_
 
                     if (ball.State == BallState.Ready && bricks3.Count <= 0)
                     {
-                        essenceSystem.Color = Color.Purple;
+                        essenceSystem.Color = Color.Plum;
                         smokeSystem.SetSpawnInfo(0.2f, 5);
 
                         ballStartSpeed = 14;
@@ -428,6 +453,9 @@ namespace Monogame___Breakout_
 
                     if (ball.State == BallState.Ready && bricks4.Count <= 0)
                     {
+                        essenceSystem.Color = Color.White;
+                        dotSystem.SetSpawnInfo(0.2f, 1);
+
                         ballStartSpeed = 16;
                         collisionManager.SetDeflectHeight(0);
                         collisionManager.SetActiveBricks(bricks5);
@@ -446,10 +474,10 @@ namespace Monogame___Breakout_
                     {
                         bricks5[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
 
                     collisionManager.Update();
+                    paddle.Update(keyboardState);
+                    ball.Update(gameTime, keyboardState, ballStartSpeed);
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -496,8 +524,9 @@ namespace Monogame___Breakout_
                     if (abyssTimer >= 6 && !hasScreenFill)
                     {
                         // screen fill
-                        smokeSystem.SetSpawnInfo(0.1f, 7);
-                        smokeSystem.SetVelocity(0, 0, -10, -25);
+
+                        smokeSystem.SetSpawnInfo(0.06f, 10);
+                        smokeSystem.SetVelocity(0, 0, -15, -25);
                         smokeSystem.MaxOpacity = 1;
                         smokeSystem.SetLifespan(1.5f, 1.5f);
                         smokeSystem.SetSize(3, 4);
@@ -571,9 +600,15 @@ namespace Monogame___Breakout_
 
             _spriteBatch.Begin();
 
+            _spriteBatch.Draw(crossroadsBackground, Vector2.Zero, Color.White * 0.9f);
+
             essenceSystem.Draw(_spriteBatch);
 
             paddle.Draw(_spriteBatch);
+
+            dotSystem.Draw(_spriteBatch);
+            ballSystem.Draw(_spriteBatch);
+
             ball.Draw(_spriteBatch);
             for (int i = 0; i < bricks5.Count; i++)
             {
@@ -595,12 +630,6 @@ namespace Monogame___Breakout_
             {
                 bricks1[i].Draw(_spriteBatch);
             }
-
-            tendril1.Draw(_spriteBatch);
-            tendril2.Draw(_spriteBatch);
-
-            smokeSystem.Draw(_spriteBatch);
-
             if (gameState == GameState.Abyss)
             {
                 for (int i = 0; i < bricks6.Count; i++)
@@ -608,6 +637,14 @@ namespace Monogame___Breakout_
                     bricks6[i].Draw(_spriteBatch);
                 }
             }
+
+            tendril1.Draw(_spriteBatch);
+            tendril2.Draw(_spriteBatch);
+
+            smokeSystem.Draw(_spriteBatch);
+            _spriteBatch.Draw(screenFader, new Rectangle(-800, 640, 2600, 400), Color.White);
+            _spriteBatch.Draw(vignette, new Rectangle(-6000, -3000, 13000, 6800), Color.White * 0.9f);
+
 
             _spriteBatch.End();
 

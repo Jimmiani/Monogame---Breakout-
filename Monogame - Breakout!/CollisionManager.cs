@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Monogame___Breakout_
 {
@@ -118,8 +119,9 @@ namespace Monogame___Breakout_
 
             // Bricks beyond breakable bricks
 
-            if (_ball.Hitbox.Intersects(new Rectangle(0, 0, 1000, _deflectHeight)))
+            if (_ball.Hitbox.Top < _deflectHeight)
             {
+                _ball.Position = new Vector2(_ball.Position.X, _deflectHeight);
                 _ball.Velocity = new Vector2(_ball.Velocity.X, -_ball.Velocity.Y);
                 _brickDeflect.Play();
             }

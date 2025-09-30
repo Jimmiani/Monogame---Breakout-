@@ -33,6 +33,8 @@ namespace Monogame___Breakout_
         private float _returnTimer;
         private Vector2 _position;
         private Vector2 _returnTarget;
+        private Vector2 _returnDistance;
+        private float _returnSpeed;
         private bool _canStart;
 
         public Ball(Texture2D texture, Rectangle window, Paddle paddle)
@@ -49,6 +51,8 @@ namespace Monogame___Breakout_
             _generator = new Random();
             _returnTimer = 0;
             _canStart = true;
+            _returnDistance = Vector2.Zero;
+            _returnSpeed = 0;
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
@@ -72,16 +76,9 @@ namespace Monogame___Breakout_
             } 
             else if (_ballState == BallState.Moving)
             {
-                if (_hitbox.Top < 0 || _hitbox.Bottom > _window.Height)
+                if (_hitbox.Bottom > _window.Height)
                 {
-                    if (_hitbox.Top < 0)
-                    {
-                        _position.Y = 0;
-                    }
-                    else
-                    {
-                        _position.Y = _window.Height - _hitbox.Height;
-                    }
+                    _position.Y = _window.Height - _hitbox.Height;
                     _velocity.Y = -_velocity.Y;
                 }
                 if (_hitbox.Left < 0 || _hitbox.Right > _window.Width)
@@ -118,15 +115,14 @@ namespace Monogame___Breakout_
                 {
                     _returnTimer = 0;
                     _ballState = BallState.Return;
+                    _returnDistance = new Vector2(_window.Width / 2, _window.Height / 2) - new Vector2(_hitbox.Center.X, _hitbox.Center.Y);
+                    _returnSpeed = _returnDistance.Length() / 40;
+                    _returnDistance.Normalize();
+                    _velocity = _returnDistance * _returnSpeed;
                 }
             }
             else if (_ballState == BallState.Return)
             {
-                Vector2 distance = new Vector2(_window.Width / 2, _window.Height / 2) - new Vector2(_hitbox.Center.X, _hitbox.Center.Y);
-                distance.Normalize();
-                float speed = 10;
-                _velocity = distance * speed;
-
                 _position += _velocity;
                 _hitbox.X = (int)_position.X;
                 _hitbox.Y = (int)_position.Y;
