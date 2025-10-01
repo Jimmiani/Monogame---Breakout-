@@ -51,7 +51,7 @@ namespace Monogame___Breakout_
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
         Texture2D ballTexture;
 
-        Texture2D crossroadsBackground;
+        Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground;
         Texture2D screenFader, vignette;
 
 
@@ -102,6 +102,7 @@ namespace Monogame___Breakout_
 
             base.Initialize();
 
+            currentBackground = crossroadsBackground;
             currentMusic = crossroadsMusic;
             paddle = new Paddle(paddleTexture1, window);
             ball = new Ball(ballTexture, window, paddle);
@@ -171,7 +172,7 @@ namespace Monogame___Breakout_
             smokeSystem.SetSize(2, 2.5f);
             smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
             smokeSystem.SetSpawnInfo(0.4f, 2);
-            smokeSystem.SetLifespan(6, 6);
+            smokeSystem.SetLifespan(7, 7);
             smokeSystem.MaxOpacity = 0;
 
             essenceSystem.SetSpawnInfo(3f, 1);
@@ -186,11 +187,13 @@ namespace Monogame___Breakout_
             ballSystem.SetSize(0.7f, 1);
             ballSystem.SetSpawnInfo(0.05f, 1);
             ballSystem.SetLifespan(0.5f, 1);
+            ballSystem.Color = Color.LightGray;
 
             dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
             dotSystem.SetSize(0.5f, 1);
             dotSystem.SetSpawnInfo(0.6f, 1);
             dotSystem.SetLifespan(3, 4);
+            dotSystem.Color = Color.Black;
         }
 
         protected override void LoadContent()
@@ -235,7 +238,7 @@ namespace Monogame___Breakout_
                 essenceParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Essence/dream_particle_" + i));
             dotParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Ball/particle_01"));
             screenFader = Content.Load<Texture2D>("Breakout/Images/Particles/Fader/black_fader");
-            vignette = Content.Load<Texture2D>("Breakout/Images/Particles/Vignette/vignette");
+            vignette = Content.Load<Texture2D>("Breakout/Images/Particles/Vignette/credits vignette");
 
             // Paddles
 
@@ -273,6 +276,11 @@ namespace Monogame___Breakout_
             // Backgrounds
 
             crossroadsBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/crossroads_background");
+            greenpathBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/greenpath_background");
+            cityBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/city_background");
+            sanctumBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/sanctum_background");
+            palaceBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/palace_background");
+            abyssBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/abyss_background");
         }
 
         protected override void Update(GameTime gameTime)
@@ -326,7 +334,7 @@ namespace Monogame___Breakout_
                     
                     if (ball.State == BallState.Ready && bricks1.Count <= 0)
                     {
-                        essenceSystem.Color = Color.DarkGreen;
+                        essenceSystem.Color = Color.LightGreen;
                         smokeSystem.MaxOpacity = 0.7f;
                         ballStartSpeed = 10;
                         collisionManager.SetDeflectHeight(bricks3[0].Hitbox.Bottom);
@@ -335,6 +343,7 @@ namespace Monogame___Breakout_
                         currentMusic = greenpathMusic;
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
+                        currentBackground = greenpathBackground;
                     }
                 }
 
@@ -379,6 +388,7 @@ namespace Monogame___Breakout_
                         currentMusic = cityMusic;
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
+                        currentBackground = cityBackground;
                     }
                 }
 
@@ -421,6 +431,7 @@ namespace Monogame___Breakout_
                         currentMusic = sanctumMusic;
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
+                        currentBackground = sanctumBackground;
                     }
                 }
 
@@ -463,6 +474,7 @@ namespace Monogame___Breakout_
                         currentMusic = palaceMusic;
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
+                        currentBackground = palaceBackground;
                     }
                 }
 
@@ -536,8 +548,11 @@ namespace Monogame___Breakout_
                     }
                     if (abyssTimer > 7)
                     {
-                        smokeSystem.SetSpawnInfo(0.1f, 4);
                         smokeSystem.SetVelocity(0, 0, -0.4f, -0.5f);
+                        smokeSystem.SetSize(2, 2.5f);
+                        smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
+                        smokeSystem.SetSpawnInfo(0.15f, 8);
+                        smokeSystem.SetLifespan(7, 7);
                         essenceSystem.Color = Color.Black;
                         abyssRoar.Play();
                         gameState = GameState.Abyss;
@@ -547,6 +562,10 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = 1;
                         ball.CanStart = true;
                         paddle.CanMove = true;
+                        currentBackground = abyssBackground;
+                        abyssAmbienceInstance.IsLooped = true;
+                        abyssAmbienceInstance.Volume = 0.4f;
+                        abyssAmbienceInstance.Play();
                     }
                 }
 
@@ -564,7 +583,7 @@ namespace Monogame___Breakout_
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        bricks6.Clear();
+                        //bricks6.Clear();
                     }
 
                     // Go to next state
@@ -600,7 +619,7 @@ namespace Monogame___Breakout_
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(crossroadsBackground, Vector2.Zero, Color.White * 0.9f);
+            _spriteBatch.Draw(currentBackground, Vector2.Zero, Color.White * 0.9f);
 
             essenceSystem.Draw(_spriteBatch);
 
@@ -642,8 +661,8 @@ namespace Monogame___Breakout_
             tendril2.Draw(_spriteBatch);
 
             smokeSystem.Draw(_spriteBatch);
-            _spriteBatch.Draw(screenFader, new Rectangle(-800, 640, 2600, 400), Color.White);
-            _spriteBatch.Draw(vignette, new Rectangle(-6000, -3000, 13000, 6800), Color.White * 0.9f);
+            _spriteBatch.Draw(screenFader, new Rectangle(-1200, 630, 3400, 400), Color.White);
+            _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.8f);
 
 
             _spriteBatch.End();

@@ -121,6 +121,30 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Paddle/paddle_bounce.wav;Breakout/Audio/Sound Effects/Paddle/paddle_bounce
 
+#begin Breakout/Images/Backgrounds/abyss_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/abyss_background.png;Breakout/Images/Backgrounds/abyss_background
+
+#begin Breakout/Images/Backgrounds/city_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/city_background.png;Breakout/Images/Backgrounds/city_background
+
 #begin Breakout/Images/Backgrounds/crossroads_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -132,6 +156,42 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Backgrounds/crossroads_background.png;Breakout/Images/Backgrounds/crossroads_background
+
+#begin Breakout/Images/Backgrounds/greenpath_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/greenpath_background.png;Breakout/Images/Backgrounds/greenpath_background
+
+#begin Breakout/Images/Backgrounds/palace_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/palace_background.png;Breakout/Images/Backgrounds/palace_background
+
+#begin Breakout/Images/Backgrounds/sanctum_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/sanctum_background.png;Breakout/Images/Backgrounds/sanctum_background
 
 #begin Breakout/Images/Ball/ball.png
 /importer:TextureImporter
@@ -409,7 +469,7 @@
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Particles/Smoke/abyss_smoke_05.png;Breakout/Images/Particles/Smoke/abyss_smoke_05
 
-#begin Breakout/Images/Particles/Vignette/vignette.png
+#begin Breakout/Images/Particles/Vignette/credits vignette.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -419,7 +479,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Breakout/Images/Particles/Vignette/vignette.png;Breakout/Images/Particles/Vignette/vignette
+/build:Breakout/Images/Particles/Vignette/credits vignette.png;Breakout/Images/Particles/Vignette/credits vignette
 
 #begin Breakout/Images/Tendrils/Left Tendril/Tendril Down 20/Tendril5 Down_000.png
 /importer:TextureImporter
