@@ -323,7 +323,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Breakout/Images/Paddles/greenpath_paddle.png;Breakout/Images/Paddles/greenpath_paddle
+/build:Breakout/Images/Paddles/greenpath_paddle.png
 
 #begin Breakout/Images/Paddles/palace_paddle.png
 /importer:TextureImporter
@@ -408,6 +408,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Particles/Fader/black_fader.png;Breakout/Images/Particles/Fader/black_fader
+
+#begin Breakout/Images/Particles/Fader/white_light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Particles/Fader/white_light.png
 
 #begin Breakout/Images/Particles/Smoke/abyss_smoke_01.png
 /importer:TextureImporter

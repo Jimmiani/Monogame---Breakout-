@@ -27,7 +27,6 @@ namespace Monogame___Breakout_
         private Vector2 _velocity;
         private Texture2D _texture;
         private Rectangle _window;
-        private Paddle _paddle;
         private Vector2 _prevLocation;
         private BallState _ballState;
         private float _returnTimer;
@@ -36,15 +35,18 @@ namespace Monogame___Breakout_
         private Vector2 _returnDistance;
         private float _returnSpeed;
         private bool _canStart;
+        private Texture2D _glowTexture;
+        private Rectangle _glowRect;
 
-        public Ball(Texture2D texture, Rectangle window, Paddle paddle)
+        public Ball(Texture2D texture, Rectangle window, Texture2D glowTexture)
         {
             _texture = texture;
             _window = window;
-            _paddle = paddle;
+            _glowTexture = glowTexture;
             _velocity = new Vector2(0, 0);
             _hitbox = new Rectangle((window.Width / 2) - 15, (window.Height / 2) - 15, 30, 30);
             _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
+            _glowRect = new Rectangle((window.Width / 2) - 50, (window.Height / 2) - 50, 600, 600);
             _returnTarget = _position;
             _prevLocation = new Vector2(0, 0);
             _ballState = BallState.Ready;
@@ -57,9 +59,10 @@ namespace Monogame___Breakout_
 
         public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
         {
+            _glowRect.X = _hitbox.Center.X - _glowRect.Width / 2;
+            _glowRect.Y = _hitbox.Center.Y - _glowRect.Height / 2;
             if (_ballState == BallState.Ready)
             {
-                _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
                 _velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {
@@ -129,14 +132,17 @@ namespace Monogame___Breakout_
 
                 if (_hitbox.Intersects(new Rectangle(_window.Width / 2, _window.Height / 2, 1, 1)))
                 {
-                    _ballState = BallState.Ready;
                     _position = new Vector2((_window.Width / 2) - (_hitbox.Width / 2), (_window.Height / 2) - (_hitbox.Height / 2));
+                    _hitbox.X = (int)_position.X;
+                    _hitbox.Y = (int)_position.Y;
+                    _ballState = BallState.Ready;
                 }
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(_glowTexture, _glowRect, Color.White * 0.2f);
             spriteBatch.Draw(_texture, _hitbox, Color.LightGray);
         }
         public Rectangle Hitbox

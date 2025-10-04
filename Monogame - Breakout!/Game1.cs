@@ -49,7 +49,7 @@ namespace Monogame___Breakout_
         List<Brick> bricks1, bricks2, bricks3, bricks4, bricks5, bricks6;
         Texture2D paddleTexture1, paddleTexture2, paddleTexture3, paddleTexture4, paddleTexture5, paddleTexture6;
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
-        Texture2D ballTexture;
+        Texture2D ballTexture, ballGlowTexture;
 
         Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground;
         Texture2D screenFader, vignette;
@@ -105,7 +105,7 @@ namespace Monogame___Breakout_
             currentBackground = crossroadsBackground;
             currentMusic = crossroadsMusic;
             paddle = new Paddle(paddleTexture1, window);
-            ball = new Ball(ballTexture, window, paddle);
+            ball = new Ball(ballTexture, window, ballGlowTexture);
 
 
             for (int i = 0; i < 8; i++)
@@ -178,9 +178,9 @@ namespace Monogame___Breakout_
             essenceSystem.SetSpawnInfo(3f, 1);
             essenceSystem.SetVelocity(0, 0, 0, 0);
             essenceSystem.SetLifespan(9, 10);
-            essenceSystem.MaxOpacity = 0.4f;
+            essenceSystem.MaxOpacity = 0.3f;
             essenceSystem.SetSize(2, 4);
-            essenceSystem.SetAngularVelocity(0.15f, 0.2f);
+            essenceSystem.SetAngularVelocity(-0.1f, 0.1f);
             essenceSystem.Color = Color.DarkSlateBlue;
 
             ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
@@ -261,9 +261,10 @@ namespace Monogame___Breakout_
             // Ball
 
             ballTexture = Content.Load<Texture2D>("Breakout/Images/Ball/ball");
+            ballGlowTexture = Content.Load<Texture2D>("Breakout/Images/Particles/Fader/white_light");
 
             // Tendrils
-            
+
             for (int i = 0; i <= 8; i++)
                 tendril1UpTextures.Add(Content.Load<Texture2D>("Breakout/Images/Tendrils/Left Tendril/Tendril Up 20/Tendril5 Up_00" + i));
             for (int i = 0; i <= 8; i++)
@@ -302,21 +303,19 @@ namespace Monogame___Breakout_
                 dotSystem.Update(gameTime);
                 ballSystem.EmitterBoundary = ball.Hitbox;
 
+                paddle.Update(keyboardState);
+                ball.Update(gameTime, keyboardState, ballStartSpeed);
+
+                collisionManager.Update();
+
                 // Crossroads
 
                 if (gameState == GameState.Crossroads)
                 {
-
-                    essenceSystem.Update(gameTime);
-
                     for (int i = 0; i < bricks1.Count; i++)
                     {
                         bricks1[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
-
-                    collisionManager.Update();
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -344,6 +343,7 @@ namespace Monogame___Breakout_
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                         currentBackground = greenpathBackground;
+                        paddle.SetPaddle(paddleTexture2);
                     }
                 }
 
@@ -355,10 +355,6 @@ namespace Monogame___Breakout_
                     {
                         bricks2[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
-
-                    collisionManager.Update();
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -389,6 +385,7 @@ namespace Monogame___Breakout_
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                         currentBackground = cityBackground;
+                        paddle.SetPaddle(paddleTexture3);
                     }
                 }
 
@@ -400,10 +397,6 @@ namespace Monogame___Breakout_
                     {
                         bricks3[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
-
-                    collisionManager.Update();
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -432,6 +425,7 @@ namespace Monogame___Breakout_
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                         currentBackground = sanctumBackground;
+                        paddle.SetPaddle(paddleTexture4);
                     }
                 }
 
@@ -443,10 +437,6 @@ namespace Monogame___Breakout_
                     {
                         bricks4[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
-
-                    collisionManager.Update();
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -475,6 +465,7 @@ namespace Monogame___Breakout_
                         MediaPlayer.Play(currentMusic);
                         MediaPlayer.Volume = 1;
                         currentBackground = palaceBackground;
+                        paddle.SetPaddle(paddleTexture5);
                     }
                 }
 
@@ -486,10 +477,6 @@ namespace Monogame___Breakout_
                     {
                         bricks5[i].Update();
                     }
-
-                    collisionManager.Update();
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -576,10 +563,6 @@ namespace Monogame___Breakout_
                     {
                         bricks6[i].Update();
                     }
-                    paddle.Update(keyboardState);
-                    ball.Update(gameTime, keyboardState, ballStartSpeed);
-
-                    collisionManager.Update();
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -628,7 +611,6 @@ namespace Monogame___Breakout_
             dotSystem.Draw(_spriteBatch);
             ballSystem.Draw(_spriteBatch);
 
-            ball.Draw(_spriteBatch);
             for (int i = 0; i < bricks5.Count; i++)
             {
                 bricks5[i].Draw(_spriteBatch);
@@ -659,6 +641,7 @@ namespace Monogame___Breakout_
 
             tendril1.Draw(_spriteBatch);
             tendril2.Draw(_spriteBatch);
+            ball.Draw(_spriteBatch);
 
             smokeSystem.Draw(_spriteBatch);
             _spriteBatch.Draw(screenFader, new Rectangle(-1200, 630, 3400, 400), Color.White);

@@ -64,5 +64,9 @@ namespace Monogame___Breakout_
             get { return  _canMove; }
             set { _canMove = value; }
         }
+        public void SetPaddle(Texture2D paddle)
+        {
+            _texture = paddle;
+        }
     }
 }
