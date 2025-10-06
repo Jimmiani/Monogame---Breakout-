@@ -606,6 +606,7 @@ namespace Monogame___Breakout_
 
             essenceSystem.Draw(_spriteBatch);
 
+            ball.Draw(_spriteBatch);
             paddle.Draw(_spriteBatch);
 
             dotSystem.Draw(_spriteBatch);
@@ -641,7 +642,6 @@ namespace Monogame___Breakout_
 
             tendril1.Draw(_spriteBatch);
             tendril2.Draw(_spriteBatch);
-            ball.Draw(_spriteBatch);
 
             smokeSystem.Draw(_spriteBatch);
             _spriteBatch.Draw(screenFader, new Rectangle(-1200, 630, 3400, 400), Color.White);
