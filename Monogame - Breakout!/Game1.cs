@@ -37,6 +37,7 @@ namespace Monogame___Breakout_
         private SpriteBatch _spriteBatch;
 
         CollisionManager collisionManager;
+        Camera2D camera;
 
         ParticleSystem smokeSystem, essenceSystem, ballSystem, dotSystem;
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
@@ -81,6 +82,8 @@ namespace Monogame___Breakout_
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.PreferredBackBufferHeight = 800;
             _graphics.ApplyChanges();
+
+            camera = new Camera2D(GraphicsDevice.Viewport);
 
             smokeParticles = new List<Texture2D>();
             essenceParticles = new List<Texture2D>();
@@ -161,7 +164,7 @@ namespace Monogame___Breakout_
                 bricks1.Add(new Brick(new Rectangle(x, y, width, height), brickTexture1));
             }
             
-            collisionManager = new CollisionManager(ball, bricks1, paddle, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce);
+            collisionManager = new CollisionManager(ball, bricks1, paddle, camera, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce);
             collisionManager.SetDeflectHeight(bricks2[0].Hitbox.Bottom);
 
             smokeSystem = new ParticleSystem(smokeParticles, new Rectangle(-150, 900, 1300, 150), EmitterShape.Rectangle);
@@ -311,6 +314,12 @@ namespace Monogame___Breakout_
                 ball.Update(gameTime, keyboardState);
 
                 collisionManager.Update();
+                camera.Update(gameTime);
+                //camera.Follow(ball.Hitbox.Center.ToVector2());
+                if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                {
+                    camera.Shake(4, 2, true);
+                }
 
                 // Crossroads
 
@@ -616,9 +625,9 @@ namespace Monogame___Breakout_
             else
                 GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: camera.Transform);
 
-            _spriteBatch.Draw(currentBackground, Vector2.Zero, Color.White * 0.9f);
+            _spriteBatch.Draw(currentBackground, new Rectangle(-50, -40, 1100, 880), Color.White * 0.9f);
 
             essenceSystem.Draw(_spriteBatch);
 

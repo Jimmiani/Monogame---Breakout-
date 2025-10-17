@@ -16,15 +16,17 @@ namespace Monogame___Breakout_
         private List<Brick> _bricks;
         private Paddle _paddle;
         private int _deflectHeight;
+        private Camera2D _camera;
 
         // Audio
         private SoundEffect _brickDamage1, _brickDamage2, _brickDeath, _brickDeflect, _paddleBounce;
 
-        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce)
+        public CollisionManager(Ball ball, List<Brick> bricks, Paddle paddle, Camera2D camera, SoundEffect brickDamage1, SoundEffect brickDamage2, SoundEffect brickDeath, SoundEffect brickDeflect, SoundEffect paddleBounce)
         {
             _ball = ball;
             _bricks = bricks;
             _paddle = paddle;
+            _camera = camera;
             _brickDamage1 = brickDamage1;
             _brickDamage2 = brickDamage2;
             _brickDeath = brickDeath;
@@ -64,6 +66,7 @@ namespace Monogame___Breakout_
                     float angle = MathHelper.PiOver2 + bounceAngle;
                     _ball.Velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle)) * speed;
                     _paddleBounce.Play(0.5f, 0, 0);
+                    _camera.Shake(2, 0.3f, true);
                 }
             }
         }
