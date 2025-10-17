@@ -24,6 +24,13 @@ namespace Monogame___Breakout_
         AbyssCutscene,
         Abyss
     }
+    enum AbyssState
+    {
+        Tendril1Up,
+        Tendril2Up,
+        ScreenCover,
+        Roar
+    }
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -43,9 +50,9 @@ namespace Monogame___Breakout_
         KeyboardState keyboardState;
         Screen screen;
         GameState gameState;
+        AbyssState abyssState;
         Paddle paddle;
         Ball ball;
-        int ballStartSpeed;
         List<Brick> bricks1, bricks2, bricks3, bricks4, bricks5, bricks6;
         Texture2D paddleTexture1, paddleTexture2, paddleTexture3, paddleTexture4, paddleTexture5, paddleTexture6;
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
@@ -56,7 +63,6 @@ namespace Monogame___Breakout_
 
 
         float abyssTimer;
-        bool tendril1Up, tendril2Up, hasScreenFill, hasRoared;
         VoidTendril tendril1, tendril2;
         List<Texture2D> tendril1UpTextures, tendril2UpTextures, tendril1DownTextures, tendril2DownTextures;
         SoundEffect tendrilEffect;
@@ -87,11 +93,8 @@ namespace Monogame___Breakout_
             bricks4 = new List<Brick>();
             bricks5 = new List<Brick>();
             bricks6 = new List<Brick>();
-            ballStartSpeed = 8;
 
             abyssTimer = 0;
-            tendril1Up = false;
-            tendril2Up = false;
             tendril1UpTextures = new List<Texture2D>();
             tendril1DownTextures = new List<Texture2D>();
             tendril2UpTextures = new List<Texture2D>();
@@ -99,6 +102,7 @@ namespace Monogame___Breakout_
 
             screen = Screen.Game;
             gameState = GameState.Crossroads;
+            abyssState = AbyssState.Tendril1Up;
 
             base.Initialize();
 
@@ -304,7 +308,7 @@ namespace Monogame___Breakout_
                 ballSystem.EmitterBoundary = ball.Hitbox;
 
                 paddle.Update(keyboardState);
-                ball.Update(gameTime, keyboardState, ballStartSpeed);
+                ball.Update(gameTime, keyboardState);
 
                 collisionManager.Update();
 
@@ -335,7 +339,7 @@ namespace Monogame___Breakout_
                     {
                         essenceSystem.Color = Color.LightGreen;
                         smokeSystem.MaxOpacity = 0.7f;
-                        ballStartSpeed = 10;
+                        ball.ChangeStartSpeed(10);
                         collisionManager.SetDeflectHeight(bricks3[0].Hitbox.Bottom);
                         collisionManager.SetActiveBricks(bricks2);
                         gameState = GameState.Greenpath;
@@ -377,7 +381,7 @@ namespace Monogame___Breakout_
                         smokeSystem.SetLifespan(8, 8);
                         
 
-                        ballStartSpeed = 12;
+                        ball.ChangeStartSpeed(12);
                         collisionManager.SetDeflectHeight(bricks4[0].Hitbox.Bottom);
                         collisionManager.SetActiveBricks(bricks3);
                         gameState = GameState.City;
@@ -417,7 +421,7 @@ namespace Monogame___Breakout_
                         essenceSystem.Color = Color.Plum;
                         smokeSystem.SetSpawnInfo(0.2f, 5);
 
-                        ballStartSpeed = 14;
+                        ball.ChangeStartSpeed(14);
                         collisionManager.SetDeflectHeight(bricks5[0].Hitbox.Bottom);
                         collisionManager.SetActiveBricks(bricks4);
                         gameState = GameState.Sanctum;
@@ -457,7 +461,7 @@ namespace Monogame___Breakout_
                         essenceSystem.Color = Color.White;
                         dotSystem.SetSpawnInfo(0.2f, 1);
 
-                        ballStartSpeed = 16;
+                        ball.ChangeStartSpeed(16);
                         collisionManager.SetDeflectHeight(0);
                         collisionManager.SetActiveBricks(bricks5);
                         gameState = GameState.Palace;
@@ -508,51 +512,64 @@ namespace Monogame___Breakout_
                     tendril1.Update(gameTime);
                     tendril2.Update(gameTime);
                     abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (abyssTimer >= 4 && !tendril1Up)
+                    if (abyssState == AbyssState.Tendril1Up)
                     {
-                        tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 158);
-                        tendril1.Up();
-                        tendril1Up = true;
+                        if (abyssTimer >= 4)
+                        {
+                            tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 158);
+                            tendril1.Up();
+                            abyssState = AbyssState.Tendril2Up;
+                            abyssTimer = 0;
+                        }
                     }
-                    if (abyssTimer >= 5 && !tendril2Up)
+                    else if (abyssState == AbyssState.Tendril2Up)
                     {
-                        tendril2.SetLocation(paddle.Hitbox.Right - 110, paddle.Hitbox.Y - 155);
-                        tendril2.Up();
-                        tendril2Up = true;
+                        if (abyssTimer >= 1)
+                        {
+                            tendril2.SetLocation(paddle.Hitbox.Right - 110, paddle.Hitbox.Y - 155);
+                            tendril2.Up();
+                            abyssState = AbyssState.ScreenCover;
+                            abyssTimer = 0;
+                        }
                     }
-                    if (abyssTimer >= 6 && !hasScreenFill)
+                    else if (abyssState == AbyssState.ScreenCover)
                     {
-                        // screen fill
+                        if (abyssTimer >= 1)
+                        {
+                            abyssScreenCover.Play();
+                            smokeSystem.SetSpawnInfo(0.06f, 10);
+                            smokeSystem.SetVelocity(0, 0, -15, -25);
+                            smokeSystem.MaxOpacity = 1;
+                            smokeSystem.SetLifespan(1.5f, 1.5f);
+                            smokeSystem.SetSize(3, 4);
 
-                        smokeSystem.SetSpawnInfo(0.06f, 10);
-                        smokeSystem.SetVelocity(0, 0, -15, -25);
-                        smokeSystem.MaxOpacity = 1;
-                        smokeSystem.SetLifespan(1.5f, 1.5f);
-                        smokeSystem.SetSize(3, 4);
-
-                        abyssScreenCover.Play();
-                        hasScreenFill = true;
+                            abyssState = AbyssState.Roar;
+                            abyssTimer = 0;
+                        }
                     }
-                    if (abyssTimer > 7)
+                    else if (abyssState == AbyssState.Roar)
                     {
-                        smokeSystem.SetVelocity(0, 0, -0.4f, -0.5f);
-                        smokeSystem.SetSize(2, 2.5f);
-                        smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
-                        smokeSystem.SetSpawnInfo(0.15f, 8);
-                        smokeSystem.SetLifespan(7, 7);
-                        essenceSystem.Color = Color.Black;
-                        abyssRoar.Play();
-                        gameState = GameState.Abyss;
-                        collisionManager.SetActiveBricks(bricks6);
-                        currentMusic = abyssMusic;
-                        MediaPlayer.Play(abyssMusic);
-                        MediaPlayer.Volume = 1;
-                        ball.CanStart = true;
-                        paddle.CanMove = true;
-                        currentBackground = abyssBackground;
-                        abyssAmbienceInstance.IsLooped = true;
-                        abyssAmbienceInstance.Volume = 0.4f;
-                        abyssAmbienceInstance.Play();
+                        if (abyssTimer >= 1)
+                        {
+                            smokeSystem.SetVelocity(0, 0, -0.4f, -0.5f);
+                            smokeSystem.SetSize(2, 2.5f);
+                            smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
+                            smokeSystem.SetSpawnInfo(0.15f, 8);
+                            smokeSystem.SetLifespan(7, 7);
+                            essenceSystem.Color = Color.Black;
+                            abyssRoar.Play();
+                            gameState = GameState.Abyss;
+                            collisionManager.SetActiveBricks(bricks6);
+                            currentMusic = abyssMusic;
+                            MediaPlayer.Play(abyssMusic);
+                            MediaPlayer.Volume = 1;
+                            ball.CanStart = true;
+                            paddle.CanMove = true;
+                            currentBackground = abyssBackground;
+                            abyssAmbienceInstance.IsLooped = true;
+                            abyssAmbienceInstance.Volume = 0.4f;
+                            abyssAmbienceInstance.Play();
+                        }
                     }
                 }
 
@@ -580,7 +597,6 @@ namespace Monogame___Breakout_
 
                     if (ball.State == BallState.Ready && bricks6.Count <= 0)
                     {
-                        ballStartSpeed = 16;
                         collisionManager.SetActiveBricks(bricks6);
                         gameState = GameState.Abyss;
                         currentMusic = abyssMusic;

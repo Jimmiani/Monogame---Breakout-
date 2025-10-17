@@ -37,6 +37,7 @@ namespace Monogame___Breakout_
         private bool _canStart;
         private Texture2D _glowTexture;
         private Rectangle _glowRect;
+        private int _startSpeed;
 
         public Ball(Texture2D texture, Rectangle window, Texture2D glowTexture)
         {
@@ -55,9 +56,10 @@ namespace Monogame___Breakout_
             _canStart = true;
             _returnDistance = Vector2.Zero;
             _returnSpeed = 0;
+            _startSpeed = 8;
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState, int startSpeed)
+        public void Update(GameTime gameTime, KeyboardState keyboardState)
         {
             _glowRect.X = _hitbox.Center.X - _glowRect.Width / 2;
             _glowRect.Y = _hitbox.Center.Y - _glowRect.Height / 2;
@@ -74,7 +76,7 @@ namespace Monogame___Breakout_
             {
                 float angle = MathHelper.ToRadians(45 + (float)_generator.NextDouble() * 90);
                 _velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-                ChangeSpeed(startSpeed);
+                ChangeSpeed(_startSpeed);
                 _ballState = BallState.Moving;
             } 
             else if (_ballState == BallState.Moving)
@@ -189,6 +191,10 @@ namespace Monogame___Breakout_
         {
             get { return _canStart; }
             set { _canStart = value; }
+        }
+        public void ChangeStartSpeed(int speed)
+        {
+            _startSpeed = speed;
         }
     }
 }
