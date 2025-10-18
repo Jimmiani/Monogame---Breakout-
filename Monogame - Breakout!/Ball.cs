@@ -38,6 +38,7 @@ namespace Monogame___Breakout_
         private Texture2D _glowTexture;
         private Rectangle _glowRect;
         private int _startSpeed;
+        private bool _canGlow;
         public Color Color { get; set; } = Color.White;
 
         public Ball(Texture2D texture, Rectangle window, Texture2D glowTexture)
@@ -58,6 +59,7 @@ namespace Monogame___Breakout_
             _returnDistance = Vector2.Zero;
             _returnSpeed = 0;
             _startSpeed = 8;
+            _canGlow = true;
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState)
@@ -145,7 +147,9 @@ namespace Monogame___Breakout_
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_glowTexture, _glowRect, Color.White * 0.2f);
+            if (_canGlow)
+                spriteBatch.Draw(_glowTexture, _glowRect, Color.White * 0.3f);
+            spriteBatch.Draw(_texture, new Rectangle(_hitbox.X - 1, _hitbox.Y - 1, _hitbox.Width + 2, _hitbox.Height + 2), Color.Black);
             spriteBatch.Draw(_texture, _hitbox, Color);
         }
         public Rectangle Hitbox
@@ -196,6 +200,11 @@ namespace Monogame___Breakout_
         public void ChangeStartSpeed(int speed)
         {
             _startSpeed = speed;
+        }
+        public bool Glow
+        {
+            get { return _canGlow; }
+            set { _canGlow = value; }
         }
     }
 }

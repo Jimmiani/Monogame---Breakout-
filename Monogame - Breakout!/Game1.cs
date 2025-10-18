@@ -28,8 +28,11 @@ namespace Monogame___Breakout_
     {
         Tendril1Up,
         Tendril2Up,
-        ScreenCover,
-        Roar
+        AbyssCover,
+        Roar,
+        Shine,
+        Shake,
+        LightCover
     }
     public class Game1 : Game
     {
@@ -43,8 +46,8 @@ namespace Monogame___Breakout_
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
-        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce;
-        SoundEffectInstance abyssAmbienceInstance, ballShineInstance;
+        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, rumbleImpactEffect, ballLongShine, ballEntrance1, ballEntrance2;
+        SoundEffectInstance abyssAmbienceInstance, ballShineInstance, rumbleInstance;
 
 
 
@@ -60,8 +63,8 @@ namespace Monogame___Breakout_
         Texture2D ballTexture, ballGlowTexture;
 
         Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground;
-        Texture2D screenFader, vignette;
-        Rectangle faderRect;
+        Texture2D screenFader, vignette, shineTexture;
+        Rectangle faderRect, shineRect;
 
 
         float abyssTimer;
@@ -92,6 +95,7 @@ namespace Monogame___Breakout_
 
             window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             faderRect = new Rectangle(-1200, 630, 3400, 400);
+            shineRect = new Rectangle(-2000, 0, 4, 4);
             bricks1 = new List<Brick>();
             bricks2 = new List<Brick>();
             bricks3 = new List<Brick>();
@@ -236,6 +240,11 @@ namespace Monogame___Breakout_
             brickDeflect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect");
             paddleBounce = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Paddle/paddle_bounce");
             tendrilEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up");
+            ballLongShine = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_challenge");
+            screenRumbleEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_loop");
+            rumbleInstance = screenRumbleEffect.CreateInstance();
+            ballEntrance1 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/mage_lord_onscreen_appear");
+            ballEntrance2 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long");
 
             // Images----------------------------------------------------------------------
 
@@ -248,6 +257,7 @@ namespace Monogame___Breakout_
             dotParticles.Add(Content.Load<Texture2D>("Breakout/Images/Particles/Ball/particle_01"));
             screenFader = Content.Load<Texture2D>("Breakout/Images/Particles/Fader/black_fader");
             vignette = Content.Load<Texture2D>("Breakout/Images/Particles/Vignette/credits vignette");
+            shineTexture = Content.Load<Texture2D>("Breakout/Images/Particles/Fader/credits flash_round");
 
             // Paddles
 
@@ -322,7 +332,6 @@ namespace Monogame___Breakout_
                 {
                     camera.Shake(4, 2, true);
                 }
-
                 // Crossroads
 
                 if (gameState == GameState.Crossroads)
@@ -551,15 +560,15 @@ namespace Monogame___Breakout_
                         {
                             tendril2.SetLocation(paddle.Hitbox.Right - 110, paddle.Hitbox.Y - 155);
                             tendril2.Up();
-                            abyssState = AbyssState.ScreenCover;
+                            abyssState = AbyssState.AbyssCover;
                             abyssTimer = 0;
                         }
                     }
-                    else if (abyssState == AbyssState.ScreenCover)
+                    else if (abyssState == AbyssState.AbyssCover)
                     {
                         if (abyssTimer >= 1)
                         {
-                            abyssScreenCover.Play();
+                            abyssScreenCover.Play(0.7f, 0, 0);
                             smokeSystem.SetSpawnInfo(0.06f, 10);
                             smokeSystem.SetVelocity(0, 0, -15, -25);
                             smokeSystem.MaxOpacity = 1;
@@ -582,26 +591,73 @@ namespace Monogame___Breakout_
                             smokeSystem.SetSpawnInfo(0.15f, 8);
                             smokeSystem.SetLifespan(7, 7);
                             essenceSystem.Color = Color.Black;
-                            abyssRoar.Play();
-                            gameState = GameState.Abyss;
-                            collisionManager.SetActiveBricks(bricks6);
-                            currentMusic = abyssMusic;
+                            currentBackground = abyssBackground;
+
+
+                            abyssRoar.Play(0.7f, 0, 0);
+                            abyssAmbienceInstance.IsLooped = true;
+                            abyssAmbienceInstance.Play();
+                            abyssAmbienceInstance.Volume = 0.4f;
                             MediaPlayer.Play(abyssMusic);
                             MediaPlayer.Volume = 1;
+                            currentMusic = abyssMusic;
+                            
+
                             ball.CanStart = true;
                             paddle.CanMove = true;
-                            currentBackground = abyssBackground;
-                            abyssAmbienceInstance.IsLooped = true;
-                            abyssAmbienceInstance.Volume = 0.4f;
-                            abyssAmbienceInstance.Play();
-                            faderRect = new Rectangle(-1200, 630, 3400, 400);
+                            ball.Glow = false;
+
+                            abyssState = AbyssState.Shine;
+                            abyssTimer = 0;
+                        }
+                    }
+                    else if (abyssState == AbyssState.Shine)
+                    {
+                        if (faderRect.Y < 630)
+                        {
+                            faderRect.Y += 15;
+                            faderRect.Height -= 36;
+                        }
+                        if (abyssTimer >= 4.5f)
+                        {
+                            ballLongShine.Play();
+                            abyssState = AbyssState.Shake;
+                            abyssTimer = 0;
+                        }
+                    }
+                    else if (abyssState == AbyssState.Shake)
+                    {
+                        if (abyssTimer >= 4)
+                        {
+                            camera.Shake(6, 0.5f, true);
+                            rumbleInstance.IsLooped = true;
+                            rumbleInstance.Play();
+                        }
+                        if (abyssTimer >= 7)
+                        {
+                            camera.Shake(40, 2, true);
+                            ballEntrance1.Play();
+                            ballEntrance2.Play();
+                            abyssState = AbyssState.LightCover;
+                            abyssTimer = 0;
+                            ballSystem.Color = Color.White;
+                            ball.Color = Color.White;
+                        }
+                    }
+                    else if (abyssState == AbyssState.LightCover)
+                    {
+                        if (abyssTimer >= 5)
+                        {
+                            shineRect.X = ball.Hitbox.Center.X - shineRect.Width / 2;
+                            shineRect.Y = ball.Hitbox.Center.Y - shineRect.Height / 2;
+
+                            shineRect.Inflate(30, 30);
                         }
                     }
                 }
 
                 else if (gameState == GameState.Abyss)
                 {
-
                     for (int i = 0; i < bricks6.Count; i++)
                     {
                         bricks6[i].Update();
@@ -648,11 +704,11 @@ namespace Monogame___Breakout_
 
             essenceSystem.Draw(_spriteBatch);
 
+            ballSystem.Draw(_spriteBatch);
             ball.Draw(_spriteBatch);
             paddle.Draw(_spriteBatch);
 
             dotSystem.Draw(_spriteBatch);
-            ballSystem.Draw(_spriteBatch);
 
             for (int i = 0; i < bricks5.Count; i++)
             {
@@ -688,6 +744,7 @@ namespace Monogame___Breakout_
             smokeSystem.Draw(_spriteBatch);
             _spriteBatch.Draw(screenFader, faderRect, Color.White);
             _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.8f);
+            _spriteBatch.Draw(shineTexture, shineRect, Color.White);
 
 
             _spriteBatch.End();

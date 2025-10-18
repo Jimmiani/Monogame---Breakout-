@@ -82,7 +82,7 @@ namespace Monogame___Breakout_
         public void Up()
         {
             _tendrilState = TendrilState.Up;
-            _tendrilEffect.Play();
+            _tendrilEffect.Play(0.7f, 0, 0);
         }
         public void Down()
         {

@@ -91,6 +91,36 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Ball/Shine/ball_shine.wav;Breakout/Audio/Sound Effects/Ball/Shine/ball_shine
 
+#begin Breakout/Audio/Sound Effects/Ball/Shine/mage_lord_onscreen_appear.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/mage_lord_onscreen_appear.wav
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_impact.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_impact.wav
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_loop.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_loop.wav
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/radiance_challenge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/radiance_challenge.wav
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long.wav
+
 #begin Breakout/Audio/Sound Effects/Bricks/Break/brick_death.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -408,6 +438,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Particles/Fader/black_fader.png;Breakout/Images/Particles/Fader/black_fader
+
+#begin Breakout/Images/Particles/Fader/credits flash_round.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Particles/Fader/credits flash_round.png
 
 #begin Breakout/Images/Particles/Fader/white_light.png
 /importer:TextureImporter
