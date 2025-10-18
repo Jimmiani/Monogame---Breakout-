@@ -66,7 +66,6 @@ namespace Monogame___Breakout_
                     float angle = MathHelper.PiOver2 + bounceAngle;
                     _ball.Velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle)) * speed;
                     _paddleBounce.Play(0.5f, 0, 0);
-                    _camera.Shake(2, 0.3f, true);
                 }
             }
         }
@@ -86,15 +85,18 @@ namespace Monogame___Breakout_
                         if (_bricks[i].Health == 10)
                         {
                             _brickDamage1.Play();
+                            _camera.Shake(3, 0.3f, true);
                         }
                         else if (_bricks[i].Health == 5)
                         {
                             _brickDamage2.Play();
+                            _camera.Shake(6, 0.3f, true);
                         }
                         else if (_bricks[i].Health == 0)
                         {
                             _brickDeath.Play();
                             _bricks.RemoveAt(i);
+                            _camera.Shake(10, 0.3f, true);
                         }
                         break;
                     }
@@ -105,15 +107,18 @@ namespace Monogame___Breakout_
                         if (_bricks[i].Health == 10)
                         {
                             _brickDamage1.Play();
+                            _camera.Shake(3, 0.3f, true);
                         }
                         else if (_bricks[i].Health == 5)
                         {
                             _brickDamage2.Play();
+                            _camera.Shake(6, 0.3f, true);
                         }
                         else if (_bricks[i].Health == 0)
                         {
                             _brickDeath.Play();
                             _bricks.RemoveAt(i);
+                            _camera.Shake(10, 0.3f, true);
                         }
                         break;
                     }

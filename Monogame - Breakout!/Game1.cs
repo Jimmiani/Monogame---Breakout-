@@ -61,6 +61,7 @@ namespace Monogame___Breakout_
 
         Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground;
         Texture2D screenFader, vignette;
+        Rectangle faderRect;
 
 
         float abyssTimer;
@@ -90,6 +91,7 @@ namespace Monogame___Breakout_
             dotParticles = new List<Texture2D>();
 
             window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            faderRect = new Rectangle(-1200, 630, 3400, 400);
             bricks1 = new List<Brick>();
             bricks2 = new List<Brick>();
             bricks3 = new List<Brick>();
@@ -194,7 +196,7 @@ namespace Monogame___Breakout_
             ballSystem.SetSize(0.7f, 1);
             ballSystem.SetSpawnInfo(0.05f, 1);
             ballSystem.SetLifespan(0.5f, 1);
-            ballSystem.Color = Color.LightGray;
+            ballSystem.Color = Color.White;
 
             dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
             dotSystem.SetSize(0.5f, 1);
@@ -315,7 +317,7 @@ namespace Monogame___Breakout_
 
                 collisionManager.Update();
                 camera.Update(gameTime);
-                //camera.Follow(ball.Hitbox.Center.ToVector2());
+                camera.Follow(Mouse.GetState().Position.ToVector2());
                 if (Mouse.GetState().RightButton == ButtonState.Pressed)
                 {
                     camera.Shake(4, 2, true);
@@ -357,6 +359,9 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = 1;
                         currentBackground = greenpathBackground;
                         paddle.SetPaddle(paddleTexture2);
+
+                        ballSystem.Color = Color.LightGray;
+                        ball.Color = Color.LightGray;
                     }
                 }
 
@@ -399,6 +404,9 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = 1;
                         currentBackground = cityBackground;
                         paddle.SetPaddle(paddleTexture3);
+
+                        ballSystem.Color = Color.DarkGray;
+                        ball.Color = Color.DarkGray;
                     }
                 }
 
@@ -439,6 +447,9 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = 1;
                         currentBackground = sanctumBackground;
                         paddle.SetPaddle(paddleTexture4);
+
+                        ballSystem.Color = Color.Gray;
+                        ball.Color = Color.Gray;
                     }
                 }
 
@@ -479,6 +490,9 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = 1;
                         currentBackground = palaceBackground;
                         paddle.SetPaddle(paddleTexture5);
+
+                        ballSystem.Color = Color.Black;
+                        ball.Color = Color.Black;
                     }
                 }
 
@@ -558,6 +572,8 @@ namespace Monogame___Breakout_
                     }
                     else if (abyssState == AbyssState.Roar)
                     {
+                        faderRect.Y -= 25;
+                        faderRect.Height += 60;
                         if (abyssTimer >= 1)
                         {
                             smokeSystem.SetVelocity(0, 0, -0.4f, -0.5f);
@@ -578,6 +594,7 @@ namespace Monogame___Breakout_
                             abyssAmbienceInstance.IsLooped = true;
                             abyssAmbienceInstance.Volume = 0.4f;
                             abyssAmbienceInstance.Play();
+                            faderRect = new Rectangle(-1200, 630, 3400, 400);
                         }
                     }
                 }
@@ -669,7 +686,7 @@ namespace Monogame___Breakout_
             tendril2.Draw(_spriteBatch);
 
             smokeSystem.Draw(_spriteBatch);
-            _spriteBatch.Draw(screenFader, new Rectangle(-1200, 630, 3400, 400), Color.White);
+            _spriteBatch.Draw(screenFader, faderRect, Color.White);
             _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.8f);
 
 

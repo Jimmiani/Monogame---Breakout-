@@ -38,6 +38,7 @@ namespace Monogame___Breakout_
         private Texture2D _glowTexture;
         private Rectangle _glowRect;
         private int _startSpeed;
+        public Color Color { get; set; } = Color.White;
 
         public Ball(Texture2D texture, Rectangle window, Texture2D glowTexture)
         {
@@ -74,7 +75,7 @@ namespace Monogame___Breakout_
             }
             else if (_ballState == BallState.Start)
             {
-                float angle = MathHelper.ToRadians(45 + (float)_generator.NextDouble() * 90);
+                float angle = MathHelper.ToRadians(75 + (float)_generator.NextDouble() * 30);
                 _velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
                 ChangeSpeed(_startSpeed);
                 _ballState = BallState.Moving;
@@ -145,7 +146,7 @@ namespace Monogame___Breakout_
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_glowTexture, _glowRect, Color.White * 0.2f);
-            spriteBatch.Draw(_texture, _hitbox, Color.LightGray);
+            spriteBatch.Draw(_texture, _hitbox, Color);
         }
         public Rectangle Hitbox
         {
