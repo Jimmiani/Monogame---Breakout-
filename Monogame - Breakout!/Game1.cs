@@ -48,7 +48,7 @@ namespace Monogame___Breakout_
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
-        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2;
+        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
         SoundEffectInstance abyssAmbienceInstance, ballShineInstance, rumbleInstance;
 
 
@@ -253,6 +253,8 @@ namespace Monogame___Breakout_
             rumbleInstance = screenRumbleEffect.CreateInstance();
             ballEntrance1 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/mage_lord_onscreen_appear");
             ballEntrance2 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long");
+            laserPrepare = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_prepare");
+            laserBurst = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_burst");
 
             // Images----------------------------------------------------------------------
 
@@ -559,16 +561,12 @@ namespace Monogame___Breakout_
                             dotSystem.SetVelocity(0, 0, -5, -8);
                             dotSystem.SetSpawnInfo(0.03f, 1);
                             dotSystem.SetLifespan(1, 1.5f);
-                            dotSystem.EmitterBoundary = new Rectangle(paddle.Hitbox.X - 60, paddle.Hitbox.Bottom + 50, paddle.Hitbox.Width + 120, 20);
+                            dotSystem.EmitterBoundary = new Rectangle(paddle.Hitbox.X - 100, paddle.Hitbox.Bottom + 50, paddle.Hitbox.Width + 200, 20);
                             rumbleInstance.Play();
                             camera.Shake(5, 1, true);
                         }
                         if (abyssTimer > 7)
                         {
-                            dotSystem.EmitterBoundary = new Rectangle(0, 650, 1000, 150);
-                            dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
-                            dotSystem.SetSpawnInfo(0.6f, 1);
-                            dotSystem.SetLifespan(3, 4);
                             abyssState = AbyssState.Tendril1Up;
                             abyssTimer = 0;
                         }
@@ -581,6 +579,11 @@ namespace Monogame___Breakout_
                             rumbleInstance.Stop(true);
                         if (abyssTimer >= 1.5)
                         {
+                            dotSystem.EmitterBoundary = new Rectangle(0, 650, 1000, 150);
+                            dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
+                            dotSystem.SetSpawnInfo(0.6f, 1);
+                            dotSystem.SetLifespan(3, 4);
+
                             tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 158);
                             tendril1.Up();
                             abyssState = AbyssState.Tendril2Up;
@@ -639,6 +642,7 @@ namespace Monogame___Breakout_
                             essenceSystem.Color = Color.Black;
 
                             currentBackground = abyssBackground;
+                            paddle.SetPaddle(paddleTexture6);
 
 
                             abyssRoar.Play(0.7f, 0, 0);
@@ -687,7 +691,7 @@ namespace Monogame___Breakout_
                         }
                         if (abyssTimer >= 7.1)
                         {
-                            camera.Shake(40, 6, true);
+                            camera.Shake(40, 5, true);
                             ballEntrance1.Play();
                             ballEntrance2.Play();
                             abyssState = AbyssState.LightCover;
@@ -698,9 +702,11 @@ namespace Monogame___Breakout_
                             tendril2.Down();
                             paddle.CanMove = true;
                             ball.Glow = true;
+                            laserPrepare.Play();
 
-                            ballSystem.SetVelocity(10, 12, 10, 12);
-                            ballSystem.SetSpawnInfo(0.02f, 2);
+                            ballSystem.FadeIn = false;
+                            ballSystem.SetVelocity(10, 10, 10, 10);
+                            ballSystem.SetSpawnInfo(0.05f, 4);
                         }
                     }
                     else if (abyssState == AbyssState.LightCover)
@@ -719,12 +725,13 @@ namespace Monogame___Breakout_
                         {
                             abyssState = AbyssState.LightFade;
                             abyssTimer = 0;
-                            // Beam effect
+                            laserBurst.Play();
 
                             ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
                             ballSystem.SetSpawnInfo(0.05f, 1);
                             ballSystem.SetLifespan(0.5f, 1);
                             ballSystem.ColorChange = true;
+                            ballSystem.FadeIn = true;
                         }
                     }
                     else if (abyssState == AbyssState.LightFade)

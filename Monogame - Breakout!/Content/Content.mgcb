@@ -115,6 +115,18 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Ball/Shine/radiance_challenge.wav
 
+#begin Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_burst.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_burst.wav
+
+#begin Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_prepare.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_prepare.wav
+
 #begin Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

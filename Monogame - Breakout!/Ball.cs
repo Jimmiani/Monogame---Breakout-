@@ -64,8 +64,8 @@ namespace Monogame___Breakout_
 
         public void Update(GameTime gameTime, KeyboardState keyboardState)
         {
-            _glowRect.X = _hitbox.Center.X - _glowRect.Width / 2;
-            _glowRect.Y = _hitbox.Center.Y - _glowRect.Height / 2;
+            _glowRect.X = _hitbox.Center.X - _glowRect.Width / 2 - 15;
+            _glowRect.Y = _hitbox.Center.Y - _glowRect.Height / 2 - 15;
             if (_ballState == BallState.Ready)
             {
                 _velocity = Vector2.Zero;
