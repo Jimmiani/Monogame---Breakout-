@@ -752,6 +752,7 @@ namespace Monogame___Breakout_
 
                 else if (gameState == GameState.Abyss)
                 {
+
                     for (int i = 0; i < bricks6.Count; i++)
                     {
                         bricks6[i].Update();
@@ -824,7 +825,7 @@ namespace Monogame___Breakout_
             {
                 bricks1[i].Draw(_spriteBatch);
             }
-            if (gameState == GameState.Abyss)
+            if (gameState == GameState.Abyss || abyssState == AbyssState.LightFade)
             {
                 for (int i = 0; i < bricks6.Count; i++)
                 {
