@@ -67,7 +67,7 @@ namespace Monogame___Breakout_
                     _animTimer = 0;
                     if (_currentFrame >= _downAnim.Count)
                     {
-                        _currentFrame = _downAnim.Count;
+                        _currentFrame = _downAnim.Count - 1;
                         _tendrilState = TendrilState.Gone;
                     }
                 }
@@ -81,11 +81,13 @@ namespace Monogame___Breakout_
 
         public void Up()
         {
+            _currentFrame = 0;
             _tendrilState = TendrilState.Up;
             _tendrilEffect.Play(0.7f, 0, 0);
         }
         public void Down()
         {
+            _currentFrame = 0;
             _tendrilState = TendrilState.Down;
         }
         public void SetLocation(int x, int y)

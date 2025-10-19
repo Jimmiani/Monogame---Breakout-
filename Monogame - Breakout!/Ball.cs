@@ -149,7 +149,6 @@ namespace Monogame___Breakout_
         {
             if (_canGlow)
                 spriteBatch.Draw(_glowTexture, _glowRect, Color.White * 0.3f);
-            spriteBatch.Draw(_texture, new Rectangle(_hitbox.X - 1, _hitbox.Y - 1, _hitbox.Width + 2, _hitbox.Height + 2), Color.Black);
             spriteBatch.Draw(_texture, _hitbox, Color);
         }
         public Rectangle Hitbox

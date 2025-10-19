@@ -42,28 +42,32 @@ namespace Monogame___Breakout_
             _initialTTL = ttl;
             _lifePercent = 1;
             _maxOpacity = opacity;
-            Opacity = 0;
+            Opacity = 1;
         }
 
-        public void Update()
+        public void Update(bool fade)
         {
             TTL--;
             Position += Velocity;
             Angle += AngularVelocity;
-            _lifePercent = 1f - (TTL / _initialTTL);
 
-            if (_lifePercent < 0.3f)
+            if (fade)
             {
-                Opacity = (_lifePercent / 0.3f) * _maxOpacity;
+                _lifePercent = 1f - (TTL / _initialTTL);
+                if (_lifePercent < 0.3f)
+                {
+                    Opacity = (_lifePercent / 0.3f) * _maxOpacity;
+                }
+                else if (_lifePercent > 0.7f)
+                {
+                    Opacity = ((1f - _lifePercent) / 0.3f) * _maxOpacity;
+                }
+                else
+                {
+                    Opacity = _maxOpacity;
+                }
             }
-            else if (_lifePercent > 0.7f)
-            {
-                Opacity = ((1f - _lifePercent) / 0.3f) * _maxOpacity;
-            }
-            else
-            {
-                Opacity = _maxOpacity;
-            }
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)

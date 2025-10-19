@@ -28,6 +28,7 @@ namespace Monogame___Breakout_
         private float _velocityAngle;
 
         public Color Color { get; set; } = Color.White;
+        public bool ColorChange { get; set; } = false;
         public bool CanSpawn { get; set; } = true;
         public float SpawnRate { get; set; } = 1.0f;
         public int SpawnAmount { get; set; } = 1;
@@ -46,6 +47,7 @@ namespace Monogame___Breakout_
         public float MinSize {  get; set; } = 0.5f;
         public float MaxSize { get; set; } = 2f;
         public float MaxOpacity { get; set; } = 1f;
+        public bool FadeIn { get; set; } = true;
 
         public bool OnlyMoveUp { get; set; } = false;
 
@@ -89,8 +91,8 @@ namespace Monogame___Breakout_
 
             for (int i = 0; i < _particles.Count; i++)
             {
-                _particles[i].Update();
-                if (_particles[i].Color != Color)
+                _particles[i].Update(FadeIn);
+                if (_particles[i].Color != Color && ColorChange)
                 {
                     _particles[i].Color = Color;
                 }

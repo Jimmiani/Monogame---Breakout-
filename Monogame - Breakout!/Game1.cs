@@ -26,13 +26,15 @@ namespace Monogame___Breakout_
     }
     enum AbyssState
     {
+        Bubble,
         Tendril1Up,
         Tendril2Up,
         AbyssCover,
         Roar,
         Shine,
         Shake,
-        LightCover
+        LightCover,
+        LightFade
     }
     public class Game1 : Game
     {
@@ -46,7 +48,7 @@ namespace Monogame___Breakout_
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
-        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, rumbleImpactEffect, ballLongShine, ballEntrance1, ballEntrance2;
+        SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2;
         SoundEffectInstance abyssAmbienceInstance, ballShineInstance, rumbleInstance;
 
 
@@ -62,9 +64,10 @@ namespace Monogame___Breakout_
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
         Texture2D ballTexture, ballGlowTexture;
 
-        Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground;
+        Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground, blackBackground;
         Texture2D screenFader, vignette, shineTexture;
         Rectangle faderRect, shineRect;
+        Color shineColor, blackBackgroundColor;
 
 
         float abyssTimer;
@@ -96,6 +99,8 @@ namespace Monogame___Breakout_
             window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             faderRect = new Rectangle(-1200, 630, 3400, 400);
             shineRect = new Rectangle(-2000, 0, 4, 4);
+            shineColor = Color.White;
+            blackBackgroundColor = Color.Black * 0;
             bricks1 = new List<Brick>();
             bricks2 = new List<Brick>();
             bricks3 = new List<Brick>();
@@ -111,12 +116,13 @@ namespace Monogame___Breakout_
 
             screen = Screen.Game;
             gameState = GameState.Crossroads;
-            abyssState = AbyssState.Tendril1Up;
+            abyssState = AbyssState.Bubble;
 
             base.Initialize();
 
             currentBackground = crossroadsBackground;
             currentMusic = crossroadsMusic;
+            rumbleInstance.IsLooped = true;
             paddle = new Paddle(paddleTexture1, window);
             ball = new Ball(ballTexture, window, ballGlowTexture);
 
@@ -195,12 +201,14 @@ namespace Monogame___Breakout_
             essenceSystem.SetSize(2, 4);
             essenceSystem.SetAngularVelocity(-0.1f, 0.1f);
             essenceSystem.Color = Color.DarkSlateBlue;
+            essenceSystem.ColorChange = true;
 
             ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
             ballSystem.SetSize(0.7f, 1);
             ballSystem.SetSpawnInfo(0.05f, 1);
             ballSystem.SetLifespan(0.5f, 1);
             ballSystem.Color = Color.White;
+            ballSystem.ColorChange = true;
 
             dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
             dotSystem.SetSize(0.5f, 1);
@@ -301,6 +309,7 @@ namespace Monogame___Breakout_
             sanctumBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/sanctum_background");
             palaceBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/palace_background");
             abyssBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/abyss_background");
+            blackBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/white_square");
         }
 
         protected override void Update(GameTime gameTime)
@@ -327,7 +336,6 @@ namespace Monogame___Breakout_
 
                 collisionManager.Update();
                 camera.Update(gameTime);
-                camera.Follow(Mouse.GetState().Position.ToVector2());
                 if (Mouse.GetState().RightButton == ButtonState.Pressed)
                 {
                     camera.Shake(4, 2, true);
@@ -544,9 +552,34 @@ namespace Monogame___Breakout_
                     tendril1.Update(gameTime);
                     tendril2.Update(gameTime);
                     abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (abyssState == AbyssState.Tendril1Up)
+                    if (abyssState == AbyssState.Bubble)
                     {
-                        if (abyssTimer >= 4)
+                        if (abyssTimer > 3)
+                        {
+                            dotSystem.SetVelocity(0, 0, -5, -8);
+                            dotSystem.SetSpawnInfo(0.03f, 1);
+                            dotSystem.SetLifespan(1, 1.5f);
+                            dotSystem.EmitterBoundary = new Rectangle(paddle.Hitbox.X - 60, paddle.Hitbox.Bottom + 50, paddle.Hitbox.Width + 120, 20);
+                            rumbleInstance.Play();
+                            camera.Shake(5, 1, true);
+                        }
+                        if (abyssTimer > 7)
+                        {
+                            dotSystem.EmitterBoundary = new Rectangle(0, 650, 1000, 150);
+                            dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
+                            dotSystem.SetSpawnInfo(0.6f, 1);
+                            dotSystem.SetLifespan(3, 4);
+                            abyssState = AbyssState.Tendril1Up;
+                            abyssTimer = 0;
+                        }
+                    }
+                    else if (abyssState == AbyssState.Tendril1Up)
+                    {
+                        if (rumbleInstance.Volume > 0.1)
+                            rumbleInstance.Volume = 1 - (abyssTimer * 3);
+                        else
+                            rumbleInstance.Stop(true);
+                        if (abyssTimer >= 1.5)
                         {
                             tendril1.SetLocation(paddle.Hitbox.X - 100, paddle.Hitbox.Y - 158);
                             tendril1.Up();
@@ -568,12 +601,20 @@ namespace Monogame___Breakout_
                     {
                         if (abyssTimer >= 1)
                         {
+                            camera.Shake(4, 2, false);
                             abyssScreenCover.Play(0.7f, 0, 0);
-                            smokeSystem.SetSpawnInfo(0.06f, 10);
-                            smokeSystem.SetVelocity(0, 0, -15, -25);
+
+                            smokeSystem.SetSpawnInfo(0.05f, 5);
+                            smokeSystem.SetVelocity(0, 0, -15, -20);
                             smokeSystem.MaxOpacity = 1;
                             smokeSystem.SetLifespan(1.5f, 1.5f);
                             smokeSystem.SetSize(3, 4);
+
+                            dotSystem.SetVelocity(0, 0, -20, -25);
+                            dotSystem.SetSpawnInfo(0.05f, 5);
+                            dotSystem.SetLifespan(3, 4);
+                            dotSystem.SetSize(0.7f, 1.3f);
+                            dotSystem.FadeIn = false;
 
                             abyssState = AbyssState.Roar;
                             abyssTimer = 0;
@@ -581,8 +622,6 @@ namespace Monogame___Breakout_
                     }
                     else if (abyssState == AbyssState.Roar)
                     {
-                        faderRect.Y -= 25;
-                        faderRect.Height += 60;
                         if (abyssTimer >= 1)
                         {
                             smokeSystem.SetVelocity(0, 0, -0.4f, -0.5f);
@@ -590,7 +629,15 @@ namespace Monogame___Breakout_
                             smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
                             smokeSystem.SetSpawnInfo(0.15f, 8);
                             smokeSystem.SetLifespan(7, 7);
+
+                            dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
+                            dotSystem.SetSize(0.5f, 1);
+                            dotSystem.SetSpawnInfo(0.6f, 1);
+                            dotSystem.SetLifespan(3, 4);
+                            dotSystem.FadeIn = true;
+
                             essenceSystem.Color = Color.Black;
+
                             currentBackground = abyssBackground;
 
 
@@ -601,57 +648,96 @@ namespace Monogame___Breakout_
                             MediaPlayer.Play(abyssMusic);
                             MediaPlayer.Volume = 1;
                             currentMusic = abyssMusic;
-                            
 
-                            ball.CanStart = true;
-                            paddle.CanMove = true;
                             ball.Glow = false;
 
                             abyssState = AbyssState.Shine;
                             abyssTimer = 0;
+                            blackBackgroundColor = Color.Black;
                         }
                     }
                     else if (abyssState == AbyssState.Shine)
                     {
-                        if (faderRect.Y < 630)
-                        {
-                            faderRect.Y += 15;
-                            faderRect.Height -= 36;
-                        }
-                        if (abyssTimer >= 4.5f)
+                        blackBackgroundColor = Color.Black * (1 - (abyssTimer / 3));
+                        if (abyssTimer >= 6)
                         {
                             ballLongShine.Play();
                             abyssState = AbyssState.Shake;
                             abyssTimer = 0;
+                            shineColor = Color.White * 0.05f;
+                            ballSystem.ColorChange = false;
                         }
                     }
                     else if (abyssState == AbyssState.Shake)
                     {
                         if (abyssTimer >= 4)
                         {
+                            float color = abyssTimer / 12;
+                            shineColor = Color.White * (color * color);
+                            shineRect.X = ball.Hitbox.Center.X - shineRect.Width / 2;
+                            shineRect.Y = ball.Hitbox.Center.Y - shineRect.Height / 2;
+                            shineRect.Inflate(1, 1);
+
                             camera.Shake(6, 0.5f, true);
-                            rumbleInstance.IsLooped = true;
                             rumbleInstance.Play();
+
+                            ballSystem.HighVelocityMode = true;
+                            ballSystem.SetVelocity(3, 4, 3, 4);
+                            ballSystem.SetLifespan(2, 3);
                         }
-                        if (abyssTimer >= 7)
+                        if (abyssTimer >= 7.1)
                         {
-                            camera.Shake(40, 2, true);
+                            camera.Shake(40, 6, true);
                             ballEntrance1.Play();
                             ballEntrance2.Play();
                             abyssState = AbyssState.LightCover;
                             abyssTimer = 0;
                             ballSystem.Color = Color.White;
                             ball.Color = Color.White;
+                            tendril1.Down();
+                            tendril2.Down();
+                            paddle.CanMove = true;
+                            ball.Glow = true;
+
+                            ballSystem.SetVelocity(10, 12, 10, 12);
+                            ballSystem.SetSpawnInfo(0.02f, 2);
                         }
                     }
                     else if (abyssState == AbyssState.LightCover)
                     {
-                        if (abyssTimer >= 5)
+                        if (abyssTimer >= 4.5)
                         {
+                            float color = abyssTimer / 4.6f;
+                            shineColor = Color.White * (color * color);
                             shineRect.X = ball.Hitbox.Center.X - shineRect.Width / 2;
                             shineRect.Y = ball.Hitbox.Center.Y - shineRect.Height / 2;
 
-                            shineRect.Inflate(30, 30);
+                            shineRect.Inflate(100, 100);
+                            rumbleInstance.Stop(true);
+                        }
+                        if (abyssTimer >= 4.7)
+                        {
+                            abyssState = AbyssState.LightFade;
+                            abyssTimer = 0;
+                            // Beam effect
+
+                            ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
+                            ballSystem.SetSpawnInfo(0.05f, 1);
+                            ballSystem.SetLifespan(0.5f, 1);
+                            ballSystem.ColorChange = true;
+                        }
+                    }
+                    else if (abyssState == AbyssState.LightFade)
+                    {
+                        if (abyssTimer > 3)
+                        {
+                            shineColor = shineColor * 0.9f;
+                        }
+                        if (abyssTimer > 3.5)
+                        {
+                            gameState = GameState.Abyss;
+                            ball.CanStart = true;
+                            collisionManager.SetActiveBricks(bricks6);
                         }
                     }
                 }
@@ -744,7 +830,8 @@ namespace Monogame___Breakout_
             smokeSystem.Draw(_spriteBatch);
             _spriteBatch.Draw(screenFader, faderRect, Color.White);
             _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.8f);
-            _spriteBatch.Draw(shineTexture, shineRect, Color.White);
+            _spriteBatch.Draw(shineTexture, shineRect, shineColor);
+            _spriteBatch.Draw(blackBackground, new Rectangle(-500, -500, 2000, 2000), blackBackgroundColor);
 
 
             _spriteBatch.End();
