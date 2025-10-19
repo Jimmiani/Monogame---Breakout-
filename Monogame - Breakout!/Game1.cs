@@ -49,7 +49,7 @@ namespace Monogame___Breakout_
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
-        SoundEffectInstance abyssAmbienceInstance, ballShineInstance, rumbleInstance;
+        SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance;
 
 
 
@@ -230,7 +230,7 @@ namespace Monogame___Breakout_
             cityMusic = Content.Load<Song>("Breakout/Audio/Music/City/city_music");
             sanctumMusic = Content.Load<Song>("Breakout/Audio/Music/Sanctum/sanctum_music");
             palaceMusic = Content.Load<Song>("Breakout/Audio/Music/Palace/palace_music");
-            abyssMusic = Content.Load<Song>("Breakout/Audio/Music/Abyss/abyss_music");
+            abyssMusic = Content.Load<Song>("Breakout/Audio/Music/Abyss/dark_descent");
 
             // Sound Effects
 
@@ -241,7 +241,6 @@ namespace Monogame___Breakout_
             ballNormalReturn = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return");
             ballDarkReturn = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss");
             ballShine = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/ball_shine");
-            ballShineInstance = ballShine.CreateInstance();
             brickDamage1 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_1");
             brickDamage2 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Damage/brick_damage_2");
             brickDeath = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Bricks/Break/brick_death");
@@ -249,6 +248,7 @@ namespace Monogame___Breakout_
             paddleBounce = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Paddle/paddle_bounce");
             tendrilEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up");
             ballLongShine = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_challenge");
+            longShineInstance = ballLongShine.CreateInstance();
             screenRumbleEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/misc_rumble_loop");
             rumbleInstance = screenRumbleEffect.CreateInstance();
             ballEntrance1 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/mage_lord_onscreen_appear");
@@ -574,9 +574,9 @@ namespace Monogame___Breakout_
                     else if (abyssState == AbyssState.Tendril1Up)
                     {
                         if (rumbleInstance.Volume > 0.1)
-                            rumbleInstance.Volume = 1 - (abyssTimer * 3);
+                            rumbleInstance.Volume = 1 - abyssTimer;
                         else
-                            rumbleInstance.Stop(true);
+                            rumbleInstance.Stop();
                         if (abyssTimer >= 1.5)
                         {
                             dotSystem.EmitterBoundary = new Rectangle(0, 650, 1000, 150);
@@ -642,15 +642,13 @@ namespace Monogame___Breakout_
                             essenceSystem.Color = Color.Black;
 
                             currentBackground = abyssBackground;
-                            paddle.SetPaddle(paddleTexture6);
+                            paddle.SetPaddle(brickTexture6);
 
 
                             abyssRoar.Play(0.7f, 0, 0);
                             abyssAmbienceInstance.IsLooped = true;
                             abyssAmbienceInstance.Play();
-                            abyssAmbienceInstance.Volume = 0.4f;
-                            MediaPlayer.Play(abyssMusic);
-                            MediaPlayer.Volume = 1;
+                            abyssAmbienceInstance.Volume = 0.2f;
                             currentMusic = abyssMusic;
 
                             ball.Glow = false;
@@ -665,7 +663,7 @@ namespace Monogame___Breakout_
                         blackBackgroundColor = Color.Black * (1 - (abyssTimer / 3));
                         if (abyssTimer >= 6)
                         {
-                            ballLongShine.Play();
+                            longShineInstance.Play();
                             abyssState = AbyssState.Shake;
                             abyssTimer = 0;
                             shineColor = Color.White * 0.05f;
@@ -725,13 +723,16 @@ namespace Monogame___Breakout_
                         {
                             abyssState = AbyssState.LightFade;
                             abyssTimer = 0;
-                            laserBurst.Play();
 
                             ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
                             ballSystem.SetSpawnInfo(0.05f, 1);
                             ballSystem.SetLifespan(0.5f, 1);
                             ballSystem.ColorChange = true;
                             ballSystem.FadeIn = true;
+
+                            longShineInstance.Stop();
+                            MediaPlayer.Play(abyssMusic);
+                            MediaPlayer.Volume = 1;
                         }
                     }
                     else if (abyssState == AbyssState.LightFade)

@@ -24,7 +24,7 @@ namespace Monogame___Breakout_
         {
             _texture = texture;
             _window = window;
-            _hitbox = new Rectangle((_window.Width / 2) - 75, _window.Height - 160, 150, 70);
+            _hitbox = new Rectangle((_window.Width / 2) - 75, _window.Height - 160, 150, 60);
             _velocity = new Vector2(0, 0);
             _canMove = true;
         }

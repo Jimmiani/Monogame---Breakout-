@@ -19,11 +19,11 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Music/Abyss/abyss_ambience.wav;Breakout/Audio/Music/Abyss/abyss_ambience
 
-#begin Breakout/Audio/Music/Abyss/abyss_music.ogg
+#begin Breakout/Audio/Music/Abyss/dark_descent.ogg
 /importer:OggImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Breakout/Audio/Music/Abyss/abyss_music.ogg;Breakout/Audio/Music/Abyss/abyss_music
+/build:Breakout/Audio/Music/Abyss/dark_descent.ogg
 
 #begin Breakout/Audio/Music/City/city_music.ogg
 /importer:OggImporter
