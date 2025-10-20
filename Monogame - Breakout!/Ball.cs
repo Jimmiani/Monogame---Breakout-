@@ -18,7 +18,8 @@ namespace Monogame___Breakout_
         Return,
         Ready,
         Start,
-        Moving
+        Moving,
+        Win
     }
     internal class Ball
     {
@@ -143,6 +144,17 @@ namespace Monogame___Breakout_
                     _ballState = BallState.Ready;
                 }
             }
+            else if (_ballState == BallState.Win)
+            {
+                _returnTarget = new Vector2(500, 250);
+                _returnTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_returnTimer <= 4)
+                {
+                    _position = Vector2.Lerp(_position, _returnTarget, 0.02f);
+                    _hitbox.X = (int)_position.X;
+                    _hitbox.Y = (int)_position.Y;
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -204,6 +216,11 @@ namespace Monogame___Breakout_
         {
             get { return _canGlow; }
             set { _canGlow = value; }
+        }
+        public void Win()
+        {
+            _returnTarget = _position + new Vector2(0, 500);
+            _ballState = BallState.Win;
         }
     }
 }

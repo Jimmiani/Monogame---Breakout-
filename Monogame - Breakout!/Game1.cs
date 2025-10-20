@@ -12,7 +12,8 @@ namespace Monogame___Breakout_
     {
         Intro,
         Game,
-        End
+        Win,
+        Lose
     }
     enum GameState
     {
@@ -22,7 +23,10 @@ namespace Monogame___Breakout_
         Sanctum,
         Palace,
         AbyssCutscene,
-        Abyss
+        Abyss,
+        AbyssEnding1,
+        AbyssEnding2,
+        AbyssEnding3
     }
     enum AbyssState
     {
@@ -340,7 +344,7 @@ namespace Monogame___Breakout_
                 camera.Update(gameTime);
                 if (Mouse.GetState().RightButton == ButtonState.Pressed)
                 {
-                    camera.Shake(4, 2, true);
+                    ball.State = BallState.Win;
                 }
                 // Crossroads
 
@@ -743,6 +747,7 @@ namespace Monogame___Breakout_
                         }
                         if (abyssTimer > 3.5)
                         {
+                            abyssTimer = 0;
                             gameState = GameState.Abyss;
                             ball.CanStart = true;
                             collisionManager.SetActiveBricks(bricks6);
@@ -752,7 +757,6 @@ namespace Monogame___Breakout_
 
                 else if (gameState == GameState.Abyss)
                 {
-
                     for (int i = 0; i < bricks6.Count; i++)
                     {
                         bricks6[i].Update();
@@ -767,23 +771,59 @@ namespace Monogame___Breakout_
 
                     if (bricks6.Count <= 0 && ball.State == BallState.Moving)
                     {
-                        ball.Stop();
-                        ballDarkReturn.Play();
-                        MediaPlayer.Volume = 0.1f;
+                        ball.Win();
+                        // Win sound effect
                     }
 
-                    if (ball.State == BallState.Ready && bricks6.Count <= 0)
+                    if (ball.State == BallState.Win && bricks6.Count <= 0)
                     {
-                        collisionManager.SetActiveBricks(bricks6);
-                        gameState = GameState.Abyss;
-                        currentMusic = abyssMusic;
-                        MediaPlayer.Play(currentMusic);
-                        MediaPlayer.Volume = 1;
+                        gameState = GameState.AbyssEnding1;
+                    }
+                }
+                else if (gameState == GameState.AbyssEnding2)
+                {
+                    abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (abyssTimer > 2)
+                    {
+
+                        // loop die effect
+                    }
+                    if (abyssTimer > 5)
+                    {
+                        // explode
+                        // loop die effect stop
+                        gameState = GameState.AbyssEnding2;
+                        abyssTimer = 0;
+                    }
+                }
+                else if (gameState == GameState.AbyssEnding2)
+                {
+                    abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (abyssTimer > 5)
+                    {
+                        // Light disappear effect
+                        gameState = GameState.AbyssEnding3;
+                        abyssTimer = 0;
+                    }
+                }
+                else if (gameState == GameState.AbyssEnding3)
+                {
+                    abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (abyssTimer > 5)
+                    {
+                        screen = Screen.Win;
                     }
                 }
             }
+            else if (screen == Screen.Win)
+            {
 
-            base.Update(gameTime);
+            }
+
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
