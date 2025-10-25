@@ -85,11 +85,6 @@ namespace Monogame___Breakout_
             } 
             else if (_ballState == BallState.Moving)
             {
-                if (_hitbox.Bottom > _window.Height)
-                {
-                    _position.Y = _window.Height - _hitbox.Height;
-                    _velocity.Y = -_velocity.Y;
-                }
                 if (_hitbox.Left < 0 || _hitbox.Right > _window.Width)
                 {
                     if (_hitbox.Left < 0)

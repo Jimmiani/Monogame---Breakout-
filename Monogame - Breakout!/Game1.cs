@@ -53,7 +53,8 @@ namespace Monogame___Breakout_
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
-        SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance;
+        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode;
+        SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance, explodeInstance;
 
 
 
@@ -74,7 +75,7 @@ namespace Monogame___Breakout_
         Color shineColor, blackBackgroundColor;
 
 
-        float abyssTimer;
+        float abyssTimer, loseTimer;
         VoidTendril tendril1, tendril2;
         List<Texture2D> tendril1UpTextures, tendril2UpTextures, tendril1DownTextures, tendril2DownTextures;
         SoundEffect tendrilEffect;
@@ -113,6 +114,7 @@ namespace Monogame___Breakout_
             bricks6 = new List<Brick>();
 
             abyssTimer = 0;
+            loseTimer = 0;
             tendril1UpTextures = new List<Texture2D>();
             tendril1DownTextures = new List<Texture2D>();
             tendril2UpTextures = new List<Texture2D>();
@@ -259,6 +261,11 @@ namespace Monogame___Breakout_
             ballEntrance2 = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_scream_long");
             laserPrepare = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_prepare");
             laserBurst = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Shine/radiance_laser_burst");
+            lightExplodeLoop = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/explode_loop");
+            explodeInstance = lightExplodeLoop.CreateInstance();
+            finalLightExplode = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/explode");
+            finalHit = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/knock_down");
+            finalLightDisappear = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/final_light_disappear");
 
             // Images----------------------------------------------------------------------
 
@@ -342,10 +349,15 @@ namespace Monogame___Breakout_
 
                 collisionManager.Update();
                 camera.Update(gameTime);
-                if (Mouse.GetState().RightButton == ButtonState.Pressed)
+
+                if (ball.Hitbox.Top > window.Height)
                 {
-                    ball.State = BallState.Win;
+                    loseTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    blackBackgroundColor = Color.Black * (loseTimer / 3);
+                    MediaPlayer.Volume = 1 - (loseTimer / 3);
                 }
+
                 // Crossroads
 
                 if (gameState == GameState.Crossroads)
@@ -751,9 +763,12 @@ namespace Monogame___Breakout_
                             gameState = GameState.Abyss;
                             ball.CanStart = true;
                             collisionManager.SetActiveBricks(bricks6);
+                            shineColor = Color.White * 0;
                         }
                     }
                 }
+
+                // Abyss
 
                 else if (gameState == GameState.Abyss)
                 {
@@ -764,7 +779,7 @@ namespace Monogame___Breakout_
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        //bricks6.Clear();
+                        bricks6.Clear();
                     }
 
                     // Go to next state
@@ -772,7 +787,8 @@ namespace Monogame___Breakout_
                     if (bricks6.Count <= 0 && ball.State == BallState.Moving)
                     {
                         ball.Win();
-                        // Win sound effect
+                        MediaPlayer.Volume = 0;
+                        finalHit.Play();
                     }
 
                     if (ball.State == BallState.Win && bricks6.Count <= 0)
@@ -780,30 +796,47 @@ namespace Monogame___Breakout_
                         gameState = GameState.AbyssEnding1;
                     }
                 }
-                else if (gameState == GameState.AbyssEnding2)
+                else if (gameState == GameState.AbyssEnding1)
                 {
                     abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    if (abyssTimer > 2)
+                    if (abyssTimer > 4)
                     {
-
-                        // loop die effect
+                        camera.Shake(8, 2, false);
+                        if (abyssTimer < 5)
+                            explodeInstance.Play();
+                        ballSystem.FadeIn = false;
+                        ballSystem.SetVelocity(7, 7, 7, 7);
+                        ballSystem.SetSpawnInfo(0.05f, 4);
+                        ballSystem.SetLifespan(10, 10);
                     }
-                    if (abyssTimer > 5)
+                    if (explodeInstance.State == SoundState.Stopped && abyssTimer > 5)
                     {
-                        // explode
-                        // loop die effect stop
+                        camera.Shake(15, 1, false);
+                        finalLightExplode.Play();
+                        explodeInstance.Stop();
                         gameState = GameState.AbyssEnding2;
                         abyssTimer = 0;
+
+                        shineRect = new Rectangle(495, 395, 10, 10);
+                        ballSystem.SetVelocity(12, 12, 12, 12);
                     }
                 }
                 else if (gameState == GameState.AbyssEnding2)
                 {
                     abyssTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                    float color = (abyssTimer * abyssTimer) / 10;
+                    shineColor = Color.White * (color * color);
+
+                    shineRect.X = window.Center.X - shineRect.Width / 2;
+                    shineRect.Y = window.Center.Y - shineRect.Height / 2;
+                    shineRect.Inflate(7, 7);
+
+                    camera.Shake(15, 1, true);
                     if (abyssTimer > 5)
                     {
-                        // Light disappear effect
+                        finalLightDisappear.Play();
                         gameState = GameState.AbyssEnding3;
                         abyssTimer = 0;
                     }

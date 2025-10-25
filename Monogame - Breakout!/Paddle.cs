@@ -34,15 +34,15 @@ namespace Monogame___Breakout_
             _velocity = Vector2.Zero;
             if (_canMove)
             {
-                if (keyboardState.IsKeyDown(Keys.Right) && _hitbox.Right < _window.Width)
+                if ((keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) && _hitbox.Right < _window.Width)
                 {
                     _velocity.X = 6;
                 }
-                if (keyboardState.IsKeyDown(Keys.Left) && _hitbox.Left > 0)
+                if ((keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) && _hitbox.Left > 0)
                 {
                     _velocity.X = -6;
                 }
-                if (keyboardState.IsKeyDown(Keys.Left) && keyboardState.IsKeyDown(Keys.Right))
+                if ((keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
                 {
                     _velocity.X = 0;
                 }
