@@ -139,7 +139,7 @@ namespace Monogame___Breakout_
             tendril2UpTextures = new List<Texture2D>();
             tendril2DownTextures = new List<Texture2D>();
 
-            screen = Screen.Game;
+            screen = Screen.Intro;
             gameState = GameState.Crossroads;
             abyssState = AbyssState.Bubble;
             loseState = LoseState.Lose;
@@ -230,7 +230,7 @@ namespace Monogame___Breakout_
             smokeSystem.SetAngularVelocity(-0.25f, 0.25f);
             smokeSystem.SetSpawnInfo(0.4f, 2);
             smokeSystem.SetLifespan(7, 7);
-            smokeSystem.MaxOpacity = 0;
+            smokeSystem.MaxOpacity = 1;
 
             smokeSystem.SetDefaults(Color.White, false, true, 0.4f, 2, 0, 0, -0.4f, -0.5f, false, -0.25f, 0.25f, 7, 7, 2, 2.5f, 0, true);
 
@@ -380,13 +380,19 @@ namespace Monogame___Breakout_
                 Exit();
 
             keyboardState = Keyboard.GetState();
-
-            if (screen == Screen.Game)
+            if (MediaPlayer.State == MediaState.Stopped)
             {
-                if (MediaPlayer.State == MediaState.Stopped)
-                {
-                    MediaPlayer.Play(currentMusic);
-                }
+                MediaPlayer.Play(currentMusic);
+            }
+
+
+            if (screen == Screen.Intro)
+            {
+                smokeSystem.Update(gameTime);
+            }
+
+            else if (screen == Screen.Game)
+            {
                 essenceSystem.Update(gameTime);
                 smokeSystem.Update(gameTime);
                 ballSystem.Update(gameTime);
@@ -890,7 +896,7 @@ namespace Monogame___Breakout_
                             abyssRoar.Play(0.7f, 0, 0);
                             abyssAmbienceInstance.IsLooped = true;
                             abyssAmbienceInstance.Play();
-                            abyssAmbienceInstance.Volume = 0.7f;
+                            abyssAmbienceInstance.Volume = 0.5f;
                             currentMusic = abyssMusic;
 
                             ball.Glow = false;
@@ -1117,7 +1123,7 @@ namespace Monogame___Breakout_
                 }
                 else if (winState == WinState.TextAppear2)
                 {
-                    if (winTimer > 4)
+                    if (winTimer > 3)
                     {
                         textAppear.Play();
                         showText2 = true;
@@ -1140,75 +1146,85 @@ namespace Monogame___Breakout_
 
         protected override void Draw(GameTime gameTime)
         {
-            if (gameState != GameState.Abyss)
-                GraphicsDevice.Clear(Color.Gray);
-            else
-                GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(transformMatrix: camera.Transform);
-
-            _spriteBatch.Draw(currentBackground, new Rectangle(-50, -40, 1100, 880), Color.White);
-
-            essenceSystem.Draw(_spriteBatch);
-
-            ballSystem.Draw(_spriteBatch);
-            ball.Draw(_spriteBatch);
-            paddle.Draw(_spriteBatch);
-
-            dotSystem.Draw(_spriteBatch);
-
-            for (int i = 0; i < bricks5.Count; i++)
+            if (screen == Screen.Intro)
             {
-                bricks5[i].Draw(_spriteBatch);
+                _spriteBatch.Begin();
+
+                smokeSystem.Draw(_spriteBatch);
+
+                _spriteBatch.End();
             }
-            for (int i = 0; i < bricks4.Count; i++)
+
+            else if (screen != Screen.Intro)
             {
-                bricks4[i].Draw(_spriteBatch);
-            }
-            for (int i = 0; i < bricks3.Count; i++)
-            {
-                bricks3[i].Draw(_spriteBatch);
-            }
-            for (int i = 0; i < bricks2.Count; i++)
-            {
-                bricks2[i].Draw(_spriteBatch);
-            }
-            for (int i = 0; i < bricks1.Count; i++)
-            {
-                bricks1[i].Draw(_spriteBatch);
-            }
-            if (gameState == GameState.Abyss || abyssState == AbyssState.LightFade)
-            {
-                for (int i = 0; i < bricks6.Count; i++)
+                _spriteBatch.Begin(transformMatrix: camera.Transform);
+
+                _spriteBatch.Draw(currentBackground, new Rectangle(-50, -40, 1100, 880), Color.White);
+
+                essenceSystem.Draw(_spriteBatch);
+
+                ballSystem.Draw(_spriteBatch);
+                ball.Draw(_spriteBatch);
+                paddle.Draw(_spriteBatch);
+
+                dotSystem.Draw(_spriteBatch);
+
+                for (int i = 0; i < bricks5.Count; i++)
                 {
-                    bricks6[i].Draw(_spriteBatch);
+                    bricks5[i].Draw(_spriteBatch);
                 }
+                for (int i = 0; i < bricks4.Count; i++)
+                {
+                    bricks4[i].Draw(_spriteBatch);
+                }
+                for (int i = 0; i < bricks3.Count; i++)
+                {
+                    bricks3[i].Draw(_spriteBatch);
+                }
+                for (int i = 0; i < bricks2.Count; i++)
+                {
+                    bricks2[i].Draw(_spriteBatch);
+                }
+                for (int i = 0; i < bricks1.Count; i++)
+                {
+                    bricks1[i].Draw(_spriteBatch);
+                }
+                if (gameState == GameState.Abyss || abyssState == AbyssState.LightFade)
+                {
+                    for (int i = 0; i < bricks6.Count; i++)
+                    {
+                        bricks6[i].Draw(_spriteBatch);
+                    }
+                }
+
+                tendril1.Draw(_spriteBatch);
+                tendril2.Draw(_spriteBatch);
+
+                smokeSystem.Draw(_spriteBatch);
+                _spriteBatch.Draw(screenFader, faderRect, Color.White);
+                _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.7f);
+                _spriteBatch.Draw(shineTexture, shineRect, shineColor);
+                _spriteBatch.Draw(blackBackground, new Rectangle(-500, -500, 2000, 2000), blackBackgroundColor);
+
+                if (showText1)
+                {
+                    _spriteBatch.DrawString(titleFont, text1, new Vector2(190, 150), textColor);
+                    _spriteBatch.DrawString(titleFont, text1, new Vector2(193, 150), textColor * 0.5f);
+                }
+                if (showText2)
+                {
+                    _spriteBatch.DrawString(gameFont, text2, new Vector2(368, 290), textColor);
+                }
+                if (showText3)
+                {
+                    _spriteBatch.DrawString(gameFont, text3, new Vector2(350, 500), textColor);
+                }
+
+                _spriteBatch.End();
             }
 
-            tendril1.Draw(_spriteBatch);
-            tendril2.Draw(_spriteBatch);
-
-            smokeSystem.Draw(_spriteBatch);
-            _spriteBatch.Draw(screenFader, faderRect, Color.White);
-            _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.8f);
-            _spriteBatch.Draw(shineTexture, shineRect, shineColor);
-            _spriteBatch.Draw(blackBackground, new Rectangle(-500, -500, 2000, 2000), blackBackgroundColor);
-
-            if (showText1)
-            {
-                _spriteBatch.DrawString(titleFont, text1, new Vector2(190, 150), textColor);
-                _spriteBatch.DrawString(titleFont, text1, new Vector2(193, 150), textColor * 0.5f);
-            }
-            if (showText2)
-            {
-                _spriteBatch.DrawString(gameFont, text2, new Vector2(368, 290), textColor);
-            }
-            if (showText3)
-            {
-                _spriteBatch.DrawString(gameFont, text3, new Vector2(350, 500), textColor);
-            }
-
-            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

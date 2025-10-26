@@ -55,6 +55,18 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Music/Sanctum/sanctum_music.ogg;Breakout/Audio/Music/Sanctum/sanctum_music
 
+#begin Breakout/Audio/Music/Title/cave_wind_loop.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Title/cave_wind_loop.wav
+
+#begin Breakout/Audio/Music/Title/titleMusic.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Music/Title/titleMusic.wav
+
 #begin Breakout/Audio/Sound Effects/Abyss/abyss_roar.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
