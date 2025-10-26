@@ -312,6 +312,18 @@
 /processorParam:TextureFormat=Color
 /build:Breakout/Images/Backgrounds/sanctum_background.png;Breakout/Images/Backgrounds/sanctum_background
 
+#begin Breakout/Images/Backgrounds/Voidheart_menu_BG.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Breakout/Images/Backgrounds/Voidheart_menu_BG.png
+
 #begin Breakout/Images/Backgrounds/white_square.png
 /importer:TextureImporter
 /processor:TextureProcessor

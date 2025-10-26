@@ -67,8 +67,8 @@ namespace Monogame___Breakout_
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
-        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode, longLose, textAppear, ballAppear, winEffect;
-        SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance, explodeInstance;
+        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode, longLose, textAppear, ballAppear, winEffect, titleSong, titleAmbienceEffect;
+        SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance, explodeInstance, titleMusic, titleAmbience;
 
 
 
@@ -85,7 +85,7 @@ namespace Monogame___Breakout_
         Texture2D brickTexture1, brickTexture2, brickTexture3, brickTexture4, brickTexture5, brickTexture6;
         Texture2D ballTexture, ballGlowTexture;
 
-        Texture2D crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground, blackBackground;
+        Texture2D titleBackground, crossroadsBackground, greenpathBackground, cityBackground, sanctumBackground, palaceBackground, abyssBackground, currentBackground, blackBackground;
         Texture2D screenFader, vignette, shineTexture;
         Rectangle faderRect, shineRect;
         Color shineColor, blackBackgroundColor, textColor;
@@ -158,7 +158,7 @@ namespace Monogame___Breakout_
 
             base.Initialize();
 
-            currentBackground = crossroadsBackground;
+            currentBackground = titleBackground;
             currentMusic = crossroadsMusic;
             rumbleInstance.IsLooped = true;
             paddle = new Paddle(paddleTexture1, window);
@@ -277,6 +277,8 @@ namespace Monogame___Breakout_
             sanctumMusic = Content.Load<Song>("Breakout/Audio/Music/Sanctum/sanctum_music");
             palaceMusic = Content.Load<Song>("Breakout/Audio/Music/Palace/palace_music");
             abyssMusic = Content.Load<Song>("Breakout/Audio/Music/Abyss/dark_descent");
+            titleSong = Content.Load<SoundEffect>("Breakout/Audio/Music/Title/titleMusic");
+            titleMusic = titleSong.CreateInstance();
 
             // Sound Effects
 
@@ -360,6 +362,7 @@ namespace Monogame___Breakout_
 
             // Backgrounds
 
+            titleBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/Voidheart_menu_BG");
             crossroadsBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/crossroads_background");
             greenpathBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/greenpath_background");
             cityBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/city_background");
@@ -380,19 +383,22 @@ namespace Monogame___Breakout_
                 Exit();
 
             keyboardState = Keyboard.GetState();
-            if (MediaPlayer.State == MediaState.Stopped)
-            {
-                MediaPlayer.Play(currentMusic);
-            }
-
 
             if (screen == Screen.Intro)
             {
+                if (titleMusic.State == SoundState.Stopped)
+                    titleMusic.Play();
                 smokeSystem.Update(gameTime);
             }
 
             else if (screen == Screen.Game)
             {
+
+                if (MediaPlayer.State == MediaState.Stopped)
+                {
+                    MediaPlayer.Play(currentMusic);
+                }
+
                 essenceSystem.Update(gameTime);
                 smokeSystem.Update(gameTime);
                 ballSystem.Update(gameTime);
@@ -1152,7 +1158,10 @@ namespace Monogame___Breakout_
             {
                 _spriteBatch.Begin();
 
+                _spriteBatch.Draw(currentBackground, new Rectangle(-100, 0, 1200, 900), Color.White);
                 smokeSystem.Draw(_spriteBatch);
+                _spriteBatch.Draw(screenFader, faderRect, Color.White);
+                _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.7f);
 
                 _spriteBatch.End();
             }
