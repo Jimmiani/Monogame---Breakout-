@@ -163,6 +163,12 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Ball/Win/knock_down.wav;Breakout/Audio/Sound Effects/Ball/Win/knock_down
 
+#begin Breakout/Audio/Sound Effects/Ball/Win/win_effect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Win/win_effect.wav;Breakout/Audio/Sound Effects/Ball/Win/win_effect
+
 #begin Breakout/Audio/Sound Effects/Bricks/Break/brick_death.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

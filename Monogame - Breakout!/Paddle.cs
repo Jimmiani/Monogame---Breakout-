@@ -36,11 +36,11 @@ namespace Monogame___Breakout_
             {
                 if ((keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)) && _hitbox.Right < _window.Width)
                 {
-                    _velocity.X = 6;
+                    _velocity.X = 8;
                 }
                 if ((keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) && _hitbox.Left > 0)
                 {
-                    _velocity.X = -6;
+                    _velocity.X = -8;
                 }
                 if ((keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
                 {

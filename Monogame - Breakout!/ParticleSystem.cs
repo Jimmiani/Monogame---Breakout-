@@ -211,11 +211,11 @@ namespace Monogame___Breakout_
             _defaultMaxXVelocity = maxXVel;
             _defaultHighVelocityMode = highVelocityMode;
 
-            _defaultMinAngularVelocity = minAngVel;
-            _defaultMaxAngularVelocity = maxAngVel;
+            _defaultMinAngularVelocity = minAngVel / 60;
+            _defaultMaxAngularVelocity = maxAngVel / 60;
 
-            _defaultMinTTL = minTTL / 60;
-            _defaultMaxTTL = maxTTL / 60;
+            _defaultMinTTL = minTTL * 60;
+            _defaultMaxTTL = maxTTL * 60;
 
             _defaultMinSize = minSize;
             _defaultMaxSize = maxSize;
