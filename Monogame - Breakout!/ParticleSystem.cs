@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Monogame___Breakout_
 {
     public enum EmitterShape
@@ -26,6 +27,7 @@ namespace Monogame___Breakout_
         private EmitterShape _emitterShape;
         private float _spawnTimer;
         private float _velocityAngle;
+
 
         public Color Color { get; set; } = Color.White;
         public bool ColorChange { get; set; } = false;
@@ -49,7 +51,29 @@ namespace Monogame___Breakout_
         public float MaxOpacity { get; set; } = 1f;
         public bool FadeIn { get; set; } = true;
 
-        public bool OnlyMoveUp { get; set; } = false;
+        // ---------- Defaults -----------
+
+        private Color _defaultColor = Color.White;
+        private bool _defaultColorChange = false;
+        private bool _defaultCanSpawn = true;
+        private float _defaultSpawnRate = 1.0f;
+        private int _defaultSpawnAmount = 1;
+        private float _defaultMinYVelocity = -1f;
+        private float _defaultMaxYVelocity = 1f;
+        private float _defaultMinXVelocity = -1f;
+        private float _defaultMaxXVelocity = 1f;
+        private bool _defaultHighVelocityMode = false;
+
+        private float _defaultMinAngularVelocity = -0.02f;
+        private float _defaultMaxAngularVelocity = 0.02f;
+
+        private float _defaultMinTTL = 120f;
+        private float _defaultMaxTTL = 240f;
+
+        private float _defaultMinSize = 0.5f;
+        private float _defaultMaxSize = 2f;
+        private float _defaultMaxOpacity = 1f;
+        private bool _defaultFadeIn = true;
 
         public ParticleSystem(List<Texture2D> textures, Vector2 location, EmitterShape shape)
         {
@@ -116,16 +140,10 @@ namespace Monogame___Breakout_
 
 
             float vx, vy; // Velocity Components
-            if (OnlyMoveUp)
-            {
-                vx = 0f;
-                vy = RandomRange(-Math.Abs(MinYVelocity), -Math.Abs(MaxYVelocity));
-            }
-            else
-            {
-                vx = RandomRange(MinXVelocity, MaxXVelocity);
-                vy = RandomRange(MinYVelocity, MaxYVelocity);
-            }
+            
+            vx = RandomRange(MinXVelocity, MaxXVelocity);
+            vy = RandomRange(MinYVelocity, MaxYVelocity);
+            
             _velocityAngle = (float)random.NextDouble() * MathHelper.TwoPi;
             Vector2 velocity = new Vector2(vx, vy);
             if (HighVelocityMode)
@@ -179,6 +197,54 @@ namespace Monogame___Breakout_
         {
             SpawnRate = rate;
             SpawnAmount = amount;
+        }
+        public void SetDefaults(Color color, bool colorChange, bool canSpawn, float spawnRate, int spawnAmount, float minXVel, float maxXVel, float minYVel, float maxYVel, bool highVelocityMode, float minAngVel, float maxAngVel, float minTTL, float maxTTL, float minSize, float maxSize, float maxOpacity, bool fadeIn)
+        {
+            _defaultColor = color;
+            _defaultColorChange = colorChange;
+            _defaultCanSpawn = canSpawn;
+            _defaultSpawnRate = spawnRate;
+            _defaultSpawnAmount = spawnAmount;
+            _defaultMinYVelocity = minYVel;
+            _defaultMaxYVelocity = maxYVel;
+            _defaultMinXVelocity = minXVel;
+            _defaultMaxXVelocity = maxXVel;
+            _defaultHighVelocityMode = highVelocityMode;
+
+            _defaultMinAngularVelocity = minAngVel;
+            _defaultMaxAngularVelocity = maxAngVel;
+
+            _defaultMinTTL = minTTL / 60;
+            _defaultMaxTTL = maxTTL / 60;
+
+            _defaultMinSize = minSize;
+            _defaultMaxSize = maxSize;
+            _defaultMaxOpacity = maxOpacity;
+            _defaultFadeIn = fadeIn;
+        }
+        public void RestoreDefaults()
+        {
+            Color = _defaultColor;
+            ColorChange = _defaultColorChange;
+            CanSpawn = _defaultCanSpawn;
+            SpawnRate = _defaultSpawnRate;
+            SpawnAmount = _defaultSpawnAmount;
+            MinYVelocity = _defaultMinYVelocity;
+            MaxYVelocity = _defaultMaxYVelocity;
+            MinXVelocity = _defaultMinXVelocity;
+            MaxXVelocity = _defaultMaxXVelocity;
+            HighVelocityMode = _defaultHighVelocityMode;
+
+            MinAngularVelocity = _defaultMinAngularVelocity;
+            MaxAngularVelocity = _defaultMaxAngularVelocity;
+
+            MinTTL = _defaultMinTTL;
+            MaxTTL = _defaultMaxTTL;
+
+            MinSize = _defaultMinSize;
+            MaxSize = _defaultMaxSize;
+            MaxOpacity = _defaultMaxOpacity;
+            FadeIn = _defaultFadeIn;
         }
     }
 }

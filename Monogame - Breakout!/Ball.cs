@@ -69,6 +69,11 @@ namespace Monogame___Breakout_
             _glowRect.Y = _hitbox.Center.Y - _glowRect.Height / 2 - 15;
             if (_ballState == BallState.Ready)
             {
+                _position += _velocity;
+
+                _hitbox.X = (int)_position.X;
+                _hitbox.Y = (int)_position.Y;
+
                 _velocity = Vector2.Zero;
                 if (keyboardState.IsKeyDown(Keys.Enter))
                 {

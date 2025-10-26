@@ -73,6 +73,12 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up.wav;Breakout/Audio/Sound Effects/Abyss/radiance_tentacles_whip_up
 
+#begin Breakout/Audio/Sound Effects/Ball/Appear/dream_enter_pt_2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Ball/Appear/dream_enter_pt_2.wav
+
 #begin Breakout/Audio/Sound Effects/Ball/Return/Dark/ball_return_abyss.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -181,11 +187,40 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect.wav;Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect
 
+#begin Breakout/Audio/Sound Effects/Lose/lose_long.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Lose/lose_long.wav;Breakout/Audio/Sound Effects/Lose/lose_long
+
+#begin Breakout/Audio/Sound Effects/Lose/text_appear.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Lose/text_appear.wav;Breakout/Audio/Sound Effects/Lose/text_appear
+
 #begin Breakout/Audio/Sound Effects/Paddle/paddle_bounce.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Paddle/paddle_bounce.wav;Breakout/Audio/Sound Effects/Paddle/paddle_bounce
+
+#begin Breakout/Font/gameFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Breakout/Font/gameFont.spritefont
+
+#begin Breakout/Font/titleFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Breakout/Font/titleFont.spritefont
+
+#begin Breakout/Font/Trajan Pro Bold.ttf
+/copy:Breakout/Font/Trajan Pro Bold.ttf
 
 #begin Breakout/Images/Backgrounds/abyss_background.png
 /importer:TextureImporter

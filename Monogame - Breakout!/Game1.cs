@@ -40,6 +40,14 @@ namespace Monogame___Breakout_
         LightCover,
         LightFade
     }
+    enum LoseState
+    {
+        Lose,
+        TextAppear1,
+        TextAppear2,
+        TextAppear3,
+        Replay
+    }
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -50,10 +58,11 @@ namespace Monogame___Breakout_
 
         ParticleSystem smokeSystem, essenceSystem, ballSystem, dotSystem;
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
+        SpriteFont titleFont, gameFont;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
-        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode;
+        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode, longLose, textAppear, ballAppear;
         SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance, explodeInstance;
 
 
@@ -62,6 +71,7 @@ namespace Monogame___Breakout_
         Screen screen;
         GameState gameState;
         AbyssState abyssState;
+        LoseState loseState;
         Paddle paddle;
         Ball ball;
         List<Brick> bricks1, bricks2, bricks3, bricks4, bricks5, bricks6;
@@ -76,6 +86,7 @@ namespace Monogame___Breakout_
 
 
         float abyssTimer, loseTimer;
+        bool showText1, showText2, showText3, hasChangedLoseStates;
         VoidTendril tendril1, tendril2;
         List<Texture2D> tendril1UpTextures, tendril2UpTextures, tendril1DownTextures, tendril2DownTextures;
         SoundEffect tendrilEffect;
@@ -123,6 +134,12 @@ namespace Monogame___Breakout_
             screen = Screen.Game;
             gameState = GameState.Crossroads;
             abyssState = AbyssState.Bubble;
+            loseState = LoseState.Lose;
+
+            showText1 = false;
+            showText2 = false;
+            showText3 = false;
+            hasChangedLoseStates = false;
 
             base.Initialize();
 
@@ -200,6 +217,8 @@ namespace Monogame___Breakout_
             smokeSystem.SetLifespan(7, 7);
             smokeSystem.MaxOpacity = 0;
 
+            smokeSystem.SetDefaults(Color.White, false, true, 0.4f, 2, 0, 0, -0.4f, -0.5f, false, -0.25f, 0.25f, 7, 7, 2, 2.5f, 0, true);
+
             essenceSystem.SetSpawnInfo(3f, 1);
             essenceSystem.SetVelocity(0, 0, 0, 0);
             essenceSystem.SetLifespan(9, 10);
@@ -209,6 +228,8 @@ namespace Monogame___Breakout_
             essenceSystem.Color = Color.DarkSlateBlue;
             essenceSystem.ColorChange = true;
 
+            essenceSystem.SetDefaults(Color.DarkSlateBlue, true, true, 3, 1, 0, 0, 0, 0, false, -0.1f, 0.1f, 9, 10, 2, 4, 0.3f, true);
+
             ballSystem.SetVelocity(-0.1f, 0.1f, -0.1f, 0.1f);
             ballSystem.SetSize(0.7f, 1);
             ballSystem.SetSpawnInfo(0.05f, 1);
@@ -216,11 +237,15 @@ namespace Monogame___Breakout_
             ballSystem.Color = Color.White;
             ballSystem.ColorChange = true;
 
+            ballSystem.SetDefaults(Color.White, false, true, 0.05f, 1, -0.1f, 0.1f, -0.1f, 0.1f, false, 0, 0, 0.5f, 1, 0.7f, 1, 1, true);
+
             dotSystem.SetVelocity(0, 0, -0.2f, -0.3f);
             dotSystem.SetSize(0.5f, 1);
             dotSystem.SetSpawnInfo(0.6f, 1);
             dotSystem.SetLifespan(3, 4);
             dotSystem.Color = Color.Black;
+
+            dotSystem.SetDefaults(Color.Black, false, true, 0.6f, 1, 0, 0, -0.2f, -0.3f, false, 0, 0, 3, 4, 0.5f, 1, 1, true);
         }
 
         protected override void LoadContent()
@@ -266,6 +291,9 @@ namespace Monogame___Breakout_
             finalLightExplode = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/explode");
             finalHit = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/knock_down");
             finalLightDisappear = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/final_light_disappear");
+            longLose = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Lose/lose_long");
+            textAppear = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Lose/text_appear");
+            ballAppear = Content.Load<SoundEffect>("Breakout/Audio/Sound EFfects/Ball/Appear/dream_enter_pt_2");
 
             // Images----------------------------------------------------------------------
 
@@ -323,6 +351,11 @@ namespace Monogame___Breakout_
             palaceBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/palace_background");
             abyssBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/abyss_background");
             blackBackground = Content.Load<Texture2D>("Breakout/Images/Backgrounds/white_square");
+
+            // Fonts----------------------------------------------------------------------
+
+            titleFont = Content.Load<SpriteFont>("Breakout/Font/titleFont");
+            gameFont = Content.Load<SpriteFont>("Breakout/Font/gameFont");
         }
 
         protected override void Update(GameTime gameTime)
@@ -350,12 +383,176 @@ namespace Monogame___Breakout_
                 collisionManager.Update();
                 camera.Update(gameTime);
 
+
+                if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                {
+                    ballSystem.RestoreDefaults();
+                }
+
+                // Lose
+
                 if (ball.Hitbox.Top > window.Height)
                 {
+                    if (!hasChangedLoseStates)
+                    {
+                        loseState = LoseState.Lose;
+                        hasChangedLoseStates = true;
+                    }
+
                     loseTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                    blackBackgroundColor = Color.Black * (loseTimer / 3);
-                    MediaPlayer.Volume = 1 - (loseTimer / 3);
+                    if (MediaPlayer.Volume > 0)
+                    {
+                        blackBackgroundColor = Color.Black * (loseTimer / 3);
+                        MediaPlayer.Volume = 1 - (loseTimer / 3);
+                    }
+
+                    if (loseState == LoseState.Lose)
+                    {
+                        longLose.Play();
+                        loseState = LoseState.TextAppear1;
+                        loseTimer = 0;
+                    }
+
+                    else if (loseState == LoseState.TextAppear1)
+                    {
+                        if (loseTimer > 7.5f)
+                        {
+                            textAppear.Play();
+                            showText1 = true;
+                            loseState = LoseState.TextAppear2;
+                            loseTimer = 0;
+                        }
+                    }
+
+                    else if (loseState == LoseState.TextAppear2)
+                    {
+                        if (loseTimer > 3)
+                        {
+                            textAppear.Play();
+                            showText2 = true;
+                            loseState = LoseState.TextAppear3;
+                            loseTimer = 0;
+                        }
+                    }
+
+                    else if (loseState == LoseState.TextAppear3)
+                    {
+                        if (loseTimer > 4)
+                        {
+                            showText3 = true;
+                            if (keyboardState.IsKeyDown(Keys.R))
+                            {
+                                // Particles
+
+                                smokeSystem.RestoreDefaults();
+                                essenceSystem.RestoreDefaults();
+                                ballSystem.RestoreDefaults();
+                                dotSystem.RestoreDefaults();
+
+                                // Music
+
+                                currentMusic = crossroadsMusic;
+                                longLose.Play();
+
+                                // Text
+
+                                showText1 = false;
+                                showText2 = false;
+                                showText3 = false;
+
+                                // Images
+
+                                currentBackground = crossroadsBackground;
+                                paddle.SetPaddle(paddleTexture1);
+                                ball.Color = Color.White;
+
+                                // Bricks
+
+                                bricks1.Clear();
+                                bricks2.Clear();
+                                bricks3.Clear();
+                                bricks4.Clear();
+                                bricks5.Clear();
+                                bricks6.Clear();
+
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 5;
+                                    bricks6.Add(new Brick(new Rectangle(x, y, width, height), brickTexture6));
+                                }
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 5;
+                                    bricks5.Add(new Brick(new Rectangle(x, y, width, height), brickTexture5));
+                                }
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 70;
+                                    bricks4.Add(new Brick(new Rectangle(x, y, width, height), brickTexture4));
+                                }
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 135;
+                                    bricks3.Add(new Brick(new Rectangle(x, y, width, height), brickTexture3));
+                                }
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 200;
+                                    bricks2.Add(new Brick(new Rectangle(x, y, width, height), brickTexture2));
+                                }
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    int width = 116;
+                                    int height = 50;
+                                    int x = (width + 8) * i + 8;
+                                    int y = 265;
+                                    bricks1.Add(new Brick(new Rectangle(x, y, width, height), brickTexture1));
+                                }
+
+                                // States
+
+                                gameState = GameState.Crossroads;
+                                abyssState = AbyssState.Bubble;
+                                ball.CanStart = false;
+                                ball.State = BallState.Ready;
+                                loseState = LoseState.Replay;
+                                collisionManager.SetActiveBricks(bricks1);
+                                collisionManager.SetDeflectHeight(bricks2[0].Hitbox.Bottom);
+                                loseTimer = 0;
+                            }
+                        }
+                    }
+                    else if (loseState == LoseState.Replay)
+                    {
+                        blackBackgroundColor = Color.Black * (1 - (loseTimer / 3));
+                        if (MediaPlayer.Volume < 1)
+                            MediaPlayer.Volume = 0 + (loseTimer / 3);
+
+                        if (loseTimer > 4)
+                        {
+                            ball.Position = new Vector2(485, 385);
+                            ball.CanStart = true;
+                            loseState = LoseState.Lose;
+                            loseTimer = 0;
+                            ballAppear.Play();
+                        }
+                    }
                 }
 
                 // Crossroads
@@ -915,6 +1112,19 @@ namespace Monogame___Breakout_
             _spriteBatch.Draw(shineTexture, shineRect, shineColor);
             _spriteBatch.Draw(blackBackground, new Rectangle(-500, -500, 2000, 2000), blackBackgroundColor);
 
+            if (showText1)
+            {
+                _spriteBatch.DrawString(titleFont, new string("You Lost"), new Vector2(190, 150), Color.White);
+                _spriteBatch.DrawString(titleFont, new string("You Lost"), new Vector2(193, 150), Color.White * 0.2f);
+            }
+            if (showText2)
+            {
+                _spriteBatch.DrawString(gameFont, new string("Taken by the Abyss..."), new Vector2(360, 290), Color.White);
+            }
+            if (showText3)
+            {
+                _spriteBatch.DrawString(gameFont, new string("Press 'R' to play again"), new Vector2(330, 500), Color.White);
+            }
 
             _spriteBatch.End();
 
