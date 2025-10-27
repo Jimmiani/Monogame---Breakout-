@@ -284,6 +284,8 @@ namespace Monogame___Breakout_
 
             abyssAmbience = Content.Load<SoundEffect>("Breakout/Audio/Music/Abyss/abyss_ambience");
             abyssAmbienceInstance = abyssAmbience.CreateInstance();
+            titleAmbienceEffect = Content.Load<SoundEffect>("Breakout/Audio/Music/Title/cave_wind_loop");
+            titleAmbience = titleAmbienceEffect.CreateInstance();
             abyssRoar = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Abyss/abyss_roar");
             abyssScreenCover = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Abyss/abyss_screen_cover");
             ballNormalReturn = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Return/Normal/ball_return");
@@ -388,7 +390,10 @@ namespace Monogame___Breakout_
             {
                 if (titleMusic.State == SoundState.Stopped)
                     titleMusic.Play();
+                if (titleAmbience.State == SoundState.Stopped)
+                    titleAmbience.Play();
                 smokeSystem.Update(gameTime);
+                dotSystem.Update(gameTime);
             }
 
             else if (screen == Screen.Game)
@@ -1160,6 +1165,7 @@ namespace Monogame___Breakout_
 
                 _spriteBatch.Draw(currentBackground, new Rectangle(-100, 0, 1200, 900), Color.White);
                 smokeSystem.Draw(_spriteBatch);
+                dotSystem.Draw(_spriteBatch);
                 _spriteBatch.Draw(screenFader, faderRect, Color.White);
                 _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.7f);
 
