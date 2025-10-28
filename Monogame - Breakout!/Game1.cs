@@ -14,6 +14,12 @@ namespace Monogame___Breakout_
         Game,
         Win
     }
+    enum IntroState
+    {
+        Waiting,
+        FadeOut,
+        FadeIn
+    }
     enum GameState
     {
         Crossroads,
@@ -61,13 +67,13 @@ namespace Monogame___Breakout_
         CollisionManager collisionManager;
         Camera2D camera;
 
-        ParticleSystem smokeSystem, essenceSystem, ballSystem, dotSystem;
+        ParticleSystem smokeSystem, essenceSystem, ballSystem, dotSystem, introSystem;
         List<Texture2D> smokeParticles, essenceParticles, dotParticles;
         SpriteFont titleFont, gameFont;
 
         Song crossroadsMusic, greenpathMusic, cityMusic, sanctumMusic, palaceMusic, abyssMusic, currentMusic;
         SoundEffect abyssAmbience, abyssRoar, abyssScreenCover, ballNormalReturn, ballDarkReturn, ballShine, brickDamage1, brickDamage2, brickDeath, brickDeflect, paddleBounce, screenRumbleEffect, ballLongShine, ballEntrance1, ballEntrance2, laserPrepare, laserBurst;
-        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode, longLose, textAppear, ballAppear, winEffect, titleSong, titleAmbienceEffect;
+        SoundEffect lightExplodeLoop, finalLightDisappear, finalHit, finalLightExplode, longLose, textAppear, ballAppear, winEffect, titleSong, titleAmbienceEffect, enterGameEffect;
         SoundEffectInstance abyssAmbienceInstance, rumbleInstance, longShineInstance, explodeInstance, titleMusic, titleAmbience;
 
 
@@ -78,6 +84,7 @@ namespace Monogame___Breakout_
         AbyssState abyssState;
         LoseState loseState;
         WinState winState;
+        IntroState introState;
         Paddle paddle;
         Ball ball;
         List<Brick> bricks1, bricks2, bricks3, bricks4, bricks5, bricks6;
@@ -91,8 +98,8 @@ namespace Monogame___Breakout_
         Color shineColor, blackBackgroundColor, textColor;
 
 
-        float abyssTimer, loseTimer, winTimer;
-        bool showText1, showText2, showText3, hasChangedLoseStates;
+        float abyssTimer, loseTimer, winTimer, gameTimer;
+        bool showText1, showText2, showText3, hasChangedLoseStates, showEnterText;
         string text1, text2, text3;
         VoidTendril tendril1, tendril2;
         List<Texture2D> tendril1UpTextures, tendril2UpTextures, tendril1DownTextures, tendril2DownTextures;
@@ -134,6 +141,8 @@ namespace Monogame___Breakout_
             abyssTimer = 0;
             loseTimer = 0;
             winTimer = 0;
+            gameTimer = 0;
+
             tendril1UpTextures = new List<Texture2D>();
             tendril1DownTextures = new List<Texture2D>();
             tendril2UpTextures = new List<Texture2D>();
@@ -144,10 +153,12 @@ namespace Monogame___Breakout_
             abyssState = AbyssState.Bubble;
             loseState = LoseState.Lose;
             winState = WinState.TextAppear1;
+            introState = IntroState.Waiting;
 
             showText1 = false;
             showText2 = false;
             showText3 = false;
+            showEnterText = false;
 
             text1 = "You Lost";
             text2 = "Taken by the Abyss";
@@ -161,7 +172,7 @@ namespace Monogame___Breakout_
             currentBackground = titleBackground;
             currentMusic = crossroadsMusic;
             rumbleInstance.IsLooped = true;
-            paddle = new Paddle(paddleTexture1, window);
+            paddle = new Paddle(paddleTexture1, window, ballGlowTexture);
             ball = new Ball(ballTexture, window, ballGlowTexture);
 
 
@@ -221,6 +232,7 @@ namespace Monogame___Breakout_
             essenceSystem = new ParticleSystem(essenceParticles, new Rectangle(0, 0, 1000, 800), EmitterShape.Rectangle);
             ballSystem = new ParticleSystem(dotParticles, ball.Hitbox, EmitterShape.Rectangle);
             dotSystem = new ParticleSystem(dotParticles, new Rectangle(0, 650, 1000, 150), EmitterShape.Rectangle);
+            introSystem = new ParticleSystem(dotParticles, new Rectangle(170, 80, 630, 290), EmitterShape.Rectangle);
 
             tendril1 = new VoidTendril(tendril1UpTextures, tendril1DownTextures, tendrilEffect);
             tendril2 = new VoidTendril(tendril2UpTextures, tendril2DownTextures, tendrilEffect);
@@ -261,6 +273,15 @@ namespace Monogame___Breakout_
             dotSystem.Color = Color.Black;
 
             dotSystem.SetDefaults(Color.Black, false, true, 0.6f, 1, 0, 0, -0.2f, -0.3f, false, 0, 0, 3, 4, 0.5f, 1, 1, true);
+
+            introSystem.SetVelocity(-0.05f, 0.05f, -0.05f, 0.05f);
+            introSystem.SetSize(0.3f, 0.6f);
+            introSystem.SetSpawnInfo(0.3f, 1);
+            introSystem.SetLifespan(7, 8);
+            introSystem.MaxOpacity = 0.5f;
+            introSystem.Color = Color.White;
+
+            introSystem.SetDefaults(Color.White, false, true, 0.6f, 1, 0, 0, -0.2f, -0.3f, false, 0, 0, 3, 4, 0.5f, 1, 0.6f, true);
         }
 
         protected override void LoadContent()
@@ -314,6 +335,7 @@ namespace Monogame___Breakout_
             textAppear = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Lose/text_appear");
             ballAppear = Content.Load<SoundEffect>("Breakout/Audio/Sound EFfects/Ball/Appear/dream_enter_pt_2");
             winEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Ball/Win/win_effect");
+            enterGameEffect = Content.Load<SoundEffect>("Breakout/Audio/Sound Effects/Intro/spa_heal");
 
             // Images----------------------------------------------------------------------
 
@@ -394,11 +416,47 @@ namespace Monogame___Breakout_
                     titleAmbience.Play();
                 smokeSystem.Update(gameTime);
                 dotSystem.Update(gameTime);
+                introSystem.Update(gameTime);
+
+                if (introState == IntroState.Waiting)
+                {
+                    if (keyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        introState = IntroState.FadeOut;
+                        enterGameEffect.Play();
+                        smokeSystem.RestoreDefaults();
+                    }
+                    
+                }
+                else if (introState == IntroState.FadeOut)
+                {
+                    gameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    blackBackgroundColor = Color.Black * (gameTimer / 1.2f);
+
+                    if (titleAmbience.Volume > 0.05f)
+                        titleAmbience.Volume = 1 - (gameTimer / 2);
+                    if (titleMusic.Volume > 0.05f)
+                        titleMusic.Volume = 1 - (gameTimer / 2);
+
+                    if (gameTimer > 3)
+                    {
+                        titleMusic.Stop();
+                        titleAmbience.Stop();
+
+                        gameTimer = 0;
+
+                        screen = Screen.Game;
+
+                        currentBackground = crossroadsBackground;
+
+                        showEnterText = true;
+                    }
+                }
             }
 
             else if (screen == Screen.Game)
             {
-
                 if (MediaPlayer.State == MediaState.Stopped)
                 {
                     MediaPlayer.Play(currentMusic);
@@ -415,12 +473,6 @@ namespace Monogame___Breakout_
 
                 collisionManager.Update();
                 camera.Update(gameTime);
-
-
-                if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                {
-                    ballSystem.RestoreDefaults();
-                }
 
                 // Lose
 
@@ -603,6 +655,19 @@ namespace Monogame___Breakout_
 
                 if (gameState == GameState.Crossroads)
                 {
+                    gameTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (gameTimer < 3)
+                    {
+                        blackBackgroundColor = Color.Black * (1 - (gameTimer / 3));
+                        MediaPlayer.Volume = (gameTimer / 3);
+                    }
+
+                    if (keyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        showEnterText = false;
+                    }
+
                     for (int i = 0; i < bricks1.Count; i++)
                     {
                         bricks1[i].Update();
@@ -1164,10 +1229,15 @@ namespace Monogame___Breakout_
                 _spriteBatch.Begin();
 
                 _spriteBatch.Draw(currentBackground, new Rectangle(-100, 0, 1200, 900), Color.White);
+                _spriteBatch.Draw(shineTexture, new Rectangle(-100, 0, 1200, 500), Color.White * 0.3f);
+                _spriteBatch.DrawString(titleFont, new string("Breakout !"), new Vector2(230, 200), Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
                 smokeSystem.Draw(_spriteBatch);
                 dotSystem.Draw(_spriteBatch);
+                introSystem.Draw(_spriteBatch);
+                _spriteBatch.DrawString(gameFont, new string("Press 'ENTER' to play !"), new Vector2(355, 400), Color.White);
                 _spriteBatch.Draw(screenFader, faderRect, Color.White);
                 _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.7f);
+                _spriteBatch.Draw(blackBackground, new Rectangle(-500, -500, 2000, 2000), blackBackgroundColor);
 
                 _spriteBatch.End();
             }
@@ -1218,6 +1288,13 @@ namespace Monogame___Breakout_
                 tendril2.Draw(_spriteBatch);
 
                 smokeSystem.Draw(_spriteBatch);
+
+                if (showEnterText)
+                {
+                    _spriteBatch.DrawString(gameFont, new string("Press 'ENTER' to start"), new Vector2(350, 480), Color.White);
+                    _spriteBatch.DrawString(gameFont, new string("Use arrow keys for movement"), new Vector2(300, 530), Color.White);
+                }
+
                 _spriteBatch.Draw(screenFader, faderRect, Color.White);
                 _spriteBatch.Draw(vignette, new Rectangle(-7000, -5000, 15000, 10800), Color.White * 0.7f);
                 _spriteBatch.Draw(shineTexture, shineRect, shineColor);

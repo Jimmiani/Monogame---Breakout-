@@ -17,13 +17,15 @@ namespace Monogame___Breakout_
         private Rectangle _hitbox;
         private Vector2 _velocity;
         private Texture2D _texture;
+        private Texture2D _glowTexture;
         private Rectangle _window;
         private bool _canMove;
 
-        public Paddle(Texture2D texture, Rectangle window)
+        public Paddle(Texture2D texture, Rectangle window, Texture2D glowTexture)
         {
             _texture = texture;
             _window = window;
+            _glowTexture = glowTexture;
             _hitbox = new Rectangle((_window.Width / 2) - 75, _window.Height - 160, 150, 60);
             _velocity = new Vector2(0, 0);
             _canMove = true;
@@ -52,6 +54,7 @@ namespace Monogame___Breakout_
 
         public void Draw(SpriteBatch spritebatch)
         {
+            spritebatch.Draw(_glowTexture, new Rectangle(_hitbox.X - 50, _hitbox.Y - 40, _hitbox.Width + 100, _hitbox.Height + 80), Color.White * 0.3f);
             spritebatch.Draw(_texture, _hitbox, Color.White);
         }
 

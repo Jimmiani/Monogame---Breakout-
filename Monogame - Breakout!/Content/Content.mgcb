@@ -205,6 +205,12 @@
 /processorParam:Quality=Best
 /build:Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect.wav;Breakout/Audio/Sound Effects/Bricks/Deflect/brick_deflect
 
+#begin Breakout/Audio/Sound Effects/Intro/spa_heal.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Breakout/Audio/Sound Effects/Intro/spa_heal.wav
+
 #begin Breakout/Audio/Sound Effects/Lose/lose_long.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
