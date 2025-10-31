@@ -78,7 +78,7 @@ namespace Monogame___Breakout_
 
 
 
-        KeyboardState keyboardState;
+        KeyboardState keyboardState, prevKeyboardState;
         Screen screen;
         GameState gameState;
         AbyssState abyssState;
@@ -406,6 +406,7 @@ namespace Monogame___Breakout_
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            prevKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
 
             if (screen == Screen.Intro)
@@ -473,6 +474,11 @@ namespace Monogame___Breakout_
 
                 collisionManager.Update();
                 camera.Update(gameTime);
+
+                if (keyboardState.IsKeyDown(Keys.Enter))
+                {
+                    showEnterText = false;
+                }
 
                 // Lose
 
@@ -663,17 +669,12 @@ namespace Monogame___Breakout_
                         MediaPlayer.Volume = (gameTimer / 3);
                     }
 
-                    if (keyboardState.IsKeyDown(Keys.Enter))
-                    {
-                        showEnterText = false;
-                    }
-
                     for (int i = 0; i < bricks1.Count; i++)
                     {
                         bricks1[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks1.Clear();
                     }
@@ -715,7 +716,7 @@ namespace Monogame___Breakout_
                         bricks2[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks2.Clear();
                     }
@@ -760,7 +761,7 @@ namespace Monogame___Breakout_
                         bricks3[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks3.Clear();
                     }
@@ -803,7 +804,7 @@ namespace Monogame___Breakout_
                         bricks4[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks4.Clear();
                     }
@@ -846,7 +847,7 @@ namespace Monogame___Breakout_
                         bricks5[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks5.Clear();
                     }
@@ -984,7 +985,7 @@ namespace Monogame___Breakout_
                     }
                     else if (abyssState == AbyssState.Shine)
                     {
-                        blackBackgroundColor = Color.Black * (1 - (abyssTimer / 3));
+                        blackBackgroundColor = Color.Black * (1 - (abyssTimer / 5));
                         if (abyssTimer >= 6)
                         {
                             longShineInstance.Play();
@@ -1096,7 +1097,7 @@ namespace Monogame___Breakout_
                         bricks6[i].Update();
                     }
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (keyboardState.IsKeyDown(Keys.D1) && prevKeyboardState.IsKeyUp(Keys.D1))
                     {
                         bricks6.Clear();
                     }
